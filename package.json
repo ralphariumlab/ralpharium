@@ -1,0 +1,55 @@
+{
+  "name": "ralpharium",
+  "version": "0.2.2",
+  "description": "Ralpharium — the observable, controllable upgrade of the Ralph Loop. 8 specialized agents in shared memory, with a polished operator dashboard, RAM inspector, and continuous-loop runner. Local-first, no cloud auth required.",
+  "license": "MIT",
+  "bin": {
+    "ralpharium": "bin/ralph-studio.js",
+    "ralph-studio": "bin/ralph-studio.js"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "start": "node bin/ralph-studio.js",
+    "dashboard": "node bin/ralph-studio.js dashboard",
+    "ram": "node bin/ralph-studio.js ram",
+    "tech": "node bin/ralph-studio.js tech",
+    "init": "node bin/ralph-studio.js init",
+    "check": "node bin/ralph-studio.js check",
+    "smoke": "node bin/ralph-studio.js smoke",
+    "prepublishOnly": "node -e \"const fs=require('fs'),p=require('path');function rm(d){if(!fs.existsSync(d))return;for(const f of fs.readdirSync(d)){const fp=p.join(d,f);if(fs.statSync(fp).isDirectory()){if(f==='__pycache__'||f==='.ralph')fs.rmSync(fp,{recursive:true,force:true});else rm(fp);}}};rm('.');console.log('cleaned pycache + .ralph');\""
+  },
+  "keywords": [
+    "ralph",
+    "ralph-loop",
+    "ralpharium",
+    "ai-agents",
+    "ai-coding",
+    "coding-agent",
+    "autonomous",
+    "claude",
+    "codex",
+    "aider",
+    "local-first",
+    "dashboard",
+    "operator-console",
+    "control-plane",
+    "shared-memory"
+  ],
+  "files": [
+    "bin",
+    "backend",
+    "frontend",
+    "PROMPT.md",
+    "AGENTS.md",
+    "IMPLEMENTATION_PLAN.md",
+    "specs",
+    "README.md",
+    "package.json"
+  ],
+  "homepage": "https://ralpharium.xyz",
+  "bugs": {
+    "url": "https://x.com/Ralphaxyz"
+  }
+}

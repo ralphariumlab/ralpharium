@@ -1,0 +1,33 @@
+# ── Secrets — never commit these ────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Local runtime / volatile ────────────────────────────────────
+.ralph/
+*.pyc
+__pycache__/
+**/__pycache__/
+.pytest_cache/
+.coverage
+
+# ── Virtual envs ────────────────────────────────────────────────
+.venv/
+venv/
+env/
+
+# ── Node ────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+
+# ── Editor / OS noise ───────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ── Build / dist artifacts ──────────────────────────────────────
+build/
+dist/
+*.egg-info/
