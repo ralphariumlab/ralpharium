@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ralpharium</title>
+<meta name="description" content="Ralpharium is a local control plane for the Ralph Loop. Run a daemon in your repo, manage autonomous coding iterations, and inspect every plan, validation, and commit from a professional dashboard.">
+<link rel="stylesheet" href="style.css?v=ralpharium-logo-up-2">
+<link rel="icon" type="image/png" href="https://static.wixstatic.com/media/e2da02_cdd3da8015f749ef94948fe714c530bb~mv2.png">
+<link rel="apple-touch-icon" href="https://static.wixstatic.com/media/e2da02_cdd3da8015f749ef94948fe714c530bb~mv2.png">
+</head>
+<body class="home-page">
+
+<!-- Springfield sky: bumpy cartoon clouds with thick ink outlines drifting across.
+     Pure SVG primitives (path + fill + stroke) — no copyrighted assets. -->
+<div class="sky-clouds" aria-hidden="true">
+  <!-- Cloud symbol — single bumpy path with ink outline -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <!-- Soft white→pale-blue radial gradient for each cloud lobe -->
+      <radialGradient id="ss-lobe" cx="38%" cy="30%" r="78%">
+        <stop offset="0%"   stop-color="#FFFFFF"/>
+        <stop offset="55%"  stop-color="#FAFDFF"/>
+        <stop offset="100%" stop-color="#A6CFE6"/>
+      </radialGradient>
+      <symbol id="ss-cloud" viewBox="0 0 340 170" overflow="visible">
+        <!-- Multi-lobe puffy cluster: three rows of overlapping circles
+             with radial-gradient shading. No outlines — soft painted look. -->
+        <g fill="url(#ss-lobe)">
+          <!-- bottom row: lower bumps -->
+          <circle cx="62"  cy="126" r="34"/>
+          <circle cx="128" cy="134" r="32"/>
+          <circle cx="194" cy="130" r="36"/>
+          <circle cx="258" cy="124" r="32"/>
+          <!-- middle row: main body -->
+          <circle cx="42"  cy="96"  r="40"/>
+          <circle cx="98"  cy="84"  r="48"/>
+          <circle cx="170" cy="76"  r="54"/>
+          <circle cx="234" cy="86"  r="46"/>
+          <circle cx="294" cy="104" r="38"/>
+          <!-- top row: puffy bumps -->
+          <circle cx="80"  cy="48"  r="32"/>
+          <circle cx="150" cy="40"  r="38"/>
+          <circle cx="216" cy="48"  r="34"/>
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+  <svg class="cloud c1"><use href="#ss-cloud"/></svg>
+  <svg class="cloud c2"><use href="#ss-cloud"/></svg>
+  <svg class="cloud c3"><use href="#ss-cloud"/></svg>
+  <svg class="cloud c4"><use href="#ss-cloud"/></svg>
+  <svg class="cloud c5"><use href="#ss-cloud"/></svg>
+  <svg class="cloud c6"><use href="#ss-cloud"/></svg>
+  <svg class="cloud c7"><use href="#ss-cloud"/></svg>
+  <svg class="cloud c8"><use href="#ss-cloud"/></svg>
+  <svg class="cloud c9"><use href="#ss-cloud"/></svg>
+  <svg class="cloud c10"><use href="#ss-cloud"/></svg>
+</div>
+
+<nav class="nav">
+  <a class="brand" href="/">
+    <span class="brand-mark"><img src="https://static.wixstatic.com/media/e2da02_253df55db309433a8658a03767c9da4c~mv2.png" alt="Ralpharium" width="36" height="36"></span>
+    <span class="brand-name">Ralpharium</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/" class="active">Home</a></li>
+    <li><a href="/dashboard">Dashboard</a></li>
+    <li><a href="/ram">RAM</a></li>
+    <li><a href="/tech">Architecture</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="https://flaunch.gg" target="_blank" rel="noreferrer" class="btn-pop btn-pop-icon btn-pop-flaunch" aria-label="Flaunch" title="Flaunch">
+      <img src="/img/flaunch-logo.svg" alt="Flaunch" width="22" height="22" class="btn-pop-img">
+    </a>
+    <a href="https://x.com/Ralphaxyz" target="_blank" rel="noreferrer" class="btn-pop btn-pop-icon btn-pop-x" aria-label="X / Twitter — @Ralphaxyz" title="X / Twitter — @Ralphaxyz">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2H21l-6.51 7.43L22 22h-6.828l-4.79-6.27L4.8 22H2.04l6.96-7.95L2 2h6.914l4.34 5.74L18.244 2zm-1.196 18h1.86L7.06 4H5.07l11.978 16z"/></svg>
+    </a>
+    <a href="https://github.com/ghuntley/how-to-ralph-wiggum" target="_blank" rel="noreferrer" class="btn-pop btn-pop-icon btn-pop-gh" aria-label="GitHub" title="GitHub">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55 0-.27-.01-.99-.02-1.94-3.2.7-3.87-1.54-3.87-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.25 3.34.95.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18.91-.25 1.89-.38 2.86-.38s1.95.13 2.86.38c2.18-1.49 3.14-1.18 3.14-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.7 5.41-5.27 5.69.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .31.21.66.79.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5Z"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- Contract address — copyable pill below the navbar -->
+<div class="ca-bar" aria-label="Contract address">
+  <button type="button" class="ca-pill" id="caPill" data-ca="TBA">
+    <span class="ca-label">CA</span>
+    <span class="ca-value" id="caValue">TBA</span>
+    <span class="ca-copy" id="caCopy" aria-hidden="true">copy</span>
+  </button>
+</div>
+
+<!-- Quickstart terminal — pinned to the top-left so visitors see how to install immediately -->
+<div class="quickstart-bar" aria-label="Quickstart">
+  <div class="terminal terminal-quick" aria-label="Quickstart commands">
+    <div class="terminal-bar">
+      <div class="stage-dots">
+        <span class="stage-dot r"></span>
+        <span class="stage-dot y"></span>
+        <span class="stage-dot g"></span>
+      </div>
+      <span class="terminal-title">~/your-repo · zsh</span>
+      <button class="terminal-copy" data-copy="npx ralpharium init&#10;npx ralpharium start" title="Copy commands">copy</button>
+    </div>
+    <div class="terminal-body">
+      <div class="line muted"># 1. scaffold the four Ralph artifacts in your repo</div>
+      <div class="line"><span class="prompt">$</span> <span class="cmd">npx ralpharium init</span></div>
+      <div class="line muted">  ↳ created <span class="hl">PROMPT.md</span>, <span class="hl">AGENTS.md</span>, <span class="hl">IMPLEMENTATION_PLAN.md</span>, <span class="hl">specs/</span>, <span class="hl">.ralph/</span></div>
+      <div class="line">&nbsp;</div>
+      <div class="line muted"># 2. boot the daemon — opens browser at localhost:3000</div>
+      <div class="line"><span class="prompt">$</span> <span class="cmd">npx ralpharium start</span></div>
+      <div class="line muted">  ↳ daemon up · websocket open · http://localhost:3000</div>
+      <div class="line">&nbsp;</div>
+      <div class="line muted"># 3. (optional) other entry points</div>
+      <div class="line"><span class="prompt">$</span> <span class="cmd">npx ralpharium dashboard</span></div>
+      <div class="line"><span class="prompt">$</span> <span class="cmd">npx ralpharium ram</span></div>
+      <div class="line"><span class="prompt">$</span> <span class="cmd">npx ralpharium start --port=4000</span></div>
+      <div class="line"><span class="cursor">▋</span></div>
+    </div>
+    <div class="terminal-foot">
+      <span class="terminal-tag">live on npm as <code>ralpharium</code></span>
+    </div>
+  </div>
+</div>
+
+<main>
+  <!-- ── Floating section jump-nav (sticky on the right) ──────────── -->
+  <aside class="side-nav" aria-label="Page sections">
+    <ul>
+      <li><a href="#top" data-target="top"><span class="side-nav-dot"></span><span class="side-nav-label">Top</span></a></li>
+      <li><a href="#how" data-target="how"><span class="side-nav-dot"></span><span class="side-nav-label">About</span></a></li>
+      <li><a href="#install" data-target="install"><span class="side-nav-dot"></span><span class="side-nav-label">Install</span></a></li>
+      <li><a href="#iterations" data-target="iterations"><span class="side-nav-dot"></span><span class="side-nav-label">Iterations</span></a></li>
+      <li><a href="#files" data-target="files"><span class="side-nav-dot"></span><span class="side-nav-label">Files</span></a></li>
+      <li><a href="#replay" data-target="replay"><span class="side-nav-dot"></span><span class="side-nav-label">Replay</span></a></li>
+      <li><a href="#dashboard-preview" data-target="dashboard-preview"><span class="side-nav-dot"></span><span class="side-nav-label">Dashboard</span></a></li>
+      <li><a href="#roadmap" data-target="roadmap"><span class="side-nav-dot"></span><span class="side-nav-label">Roadmap</span></a></li>
+      <li><a href="#start" data-target="start"><span class="side-nav-dot"></span><span class="side-nav-label">Start</span></a></li>
+    </ul>
+  </aside>
+
+  <!-- ── HERO ─────────────────────────────────────────────────────── -->
+  <section class="hero wrap" id="top">
+    <img src="img/hero-right.png" alt="" class="hero-far-right" aria-hidden="true" style="position:absolute; top:2.5rem; left:-6vw; right:auto; width:clamp(150px,14vw,235px); z-index:1; pointer-events:none;">
+    <!-- Donut sprinkles flecked across the sky -->
+    <div class="sprinkles" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <!-- Springfield donut motifs (decorative SVG, no copyrighted assets) -->
+    <svg class="donut-accent tr" viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="50" r="38" fill="#F7A8D8" stroke="#111827" stroke-width="4"/>
+      <circle cx="50" cy="50" r="14" fill="#0b0d12" stroke="#111827" stroke-width="3"/>
+      <path d="M22 42 q6 -6 12 0 t12 0 t12 0 t12 0" fill="none" stroke="#FFD90F" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="35" cy="35" r="2" fill="#70C7FF"/>
+      <circle cx="63" cy="38" r="2" fill="#B6F569"/>
+      <circle cx="58" cy="62" r="2" fill="#E84A5F"/>
+      <circle cx="34" cy="60" r="2" fill="#FFD90F"/>
+    </svg>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow fade-up">
+          <span class="dot dot-pulse"></span>
+          Live on npm · <a href="https://www.npmjs.com/package/ralpharium" target="_blank" rel="noreferrer" class="eyebrow-link">npx ralpharium init</a> · runs entirely on your machine
+        </span>
+        <h1 class="fade-up fade-up-1">
+          AI coding loops, <span class="it">under</span>
+          <span class="accent">control.</span>
+        </h1>
+        <p class="hero-lead fade-up fade-up-2">
+          Ralpharium is a small local app that runs AI coding loops — Claude, Codex, Aider, or any shell command — and gives you a dashboard to <strong>start, watch, and stop them safely</strong>. See what the AI changed, why it stopped, and whether it's safe to keep going. Nothing leaves your machine.
+        </p>
+        <div class="hero-actions fade-up fade-up-3">
+          <a href="#install" class="btn btn-primary">
+            Install · 2 commands
+            <span class="arrow">→</span>
+          </a>
+          <a href="https://www.npmjs.com/package/ralpharium" target="_blank" rel="noreferrer" class="btn btn-ghost">View on npm</a>
+        </div>
+
+        <div class="hero-meta fade-up fade-up-4">
+          <div class="hero-meta-item">
+            <strong id="metaIters">0</strong>
+            <span>Iterations recorded</span>
+          </div>
+          <div class="hero-meta-item">
+            <strong id="metaTasks">— / —</strong>
+            <span>Plan tasks done</span>
+          </div>
+          <div class="hero-meta-item">
+            <strong id="metaSpecs">0</strong>
+            <span>Specs tracked</span>
+          </div>
+          <div class="hero-meta-item">
+            <strong id="metaRuntime">offline</strong>
+            <span>Backend status</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: CRT monitor stacked directly on top of the stage card -->
+      <div class="hero-right-col">
+      <!-- ── Cartoon retro CRT monitor sitting on top of the stage card.
+           Original SVG art — boxy beige/teal CRT vibe, thick ink outlines.
+           The screen shows live RAM stats in green-phosphor mono text. -->
+      <div class="ram-crt fade-up fade-up-2" aria-label="Cartoon RAM monitor">
+        <svg class="crt-svg" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
+          <!-- floppy disk on top -->
+          <g>
+            <rect x="118" y="2" width="74" height="14" rx="2" fill="#2A6E8F" stroke="#111827" stroke-width="3"/>
+            <rect x="138" y="0" width="34" height="6"  fill="#1B4D66" stroke="#111827" stroke-width="2"/>
+          </g>
+          <!-- monitor body -->
+          <rect x="34" y="14" width="240" height="170" rx="14" fill="#D8E2DA" stroke="#111827" stroke-width="4"/>
+          <rect x="34" y="14" width="240" height="170" rx="14" fill="none" stroke="#A4B5AB" stroke-width="2" stroke-dasharray="0" opacity=".55" transform="translate(2,2)"/>
+          <!-- screen recess -->
+          <rect x="58" y="34" width="192" height="124" rx="10" fill="#0F2A1F" stroke="#111827" stroke-width="3"/>
+          <!-- screen glass highlight -->
+          <path d="M 64 40 Q 96 30 152 40 L 142 56 Q 96 50 70 60 Z" fill="#FFFFFF" opacity=".10"/>
+          <!-- screen content (live RAM text in green phosphor) -->
+          <g font-family="JetBrains Mono, ui-monospace, monospace" font-size="9" fill="#B6F569">
+            <text x="68" y="52" font-weight="700" fill="#FFD90F">▚ RAM MONITOR</text>
+            <text x="68" y="68"  id="crtSeg">seg ralph_studio_blackboard</text>
+            <text x="68" y="80"  id="crtBytes">used —/—</text>
+            <text x="68" y="92"  id="crtEvents">events 0/0</text>
+            <text x="68" y="104" id="crtProc">proc no runner</text>
+            <text x="68" y="116" id="crtCtx">ctx — · ~0 tok</text>
+            <text x="68" y="128" id="crtMode">mode idle</text>
+            <text x="68" y="142" font-weight="700" fill="#FFD90F">_<tspan class="crt-cursor">▍</tspan></text>
+          </g>
+          <!-- power LED + label -->
+          <circle cx="252" cy="174" r="4" fill="#B6F569" stroke="#111827" stroke-width="1.5">
+            <animate attributeName="opacity" values="1;.4;1" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <text x="64" y="178" font-family="Inter, sans-serif" font-weight="900" font-size="11" fill="#111827" letter-spacing="1.2">RalphCorp</text>
+          <!-- side vent on the right -->
+          <g stroke="#111827" stroke-width="2">
+            <line x1="280" y1="60"  x2="290" y2="60"/>
+            <line x1="280" y1="76"  x2="290" y2="76"/>
+            <line x1="280" y1="92"  x2="290" y2="92"/>
+            <line x1="280" y1="108" x2="290" y2="108"/>
+            <line x1="280" y1="124" x2="290" y2="124"/>
+            <line x1="280" y1="140" x2="290" y2="140"/>
+          </g>
+          <rect x="276" y="50" width="22" height="100" rx="4" fill="#B5C2BA" stroke="#111827" stroke-width="3"/>
+          <g stroke="#111827" stroke-width="2">
+            <line x1="280" y1="60"  x2="294" y2="60"/>
+            <line x1="280" y1="74"  x2="294" y2="74"/>
+            <line x1="280" y1="88"  x2="294" y2="88"/>
+            <line x1="280" y1="102" x2="294" y2="102"/>
+            <line x1="280" y1="116" x2="294" y2="116"/>
+            <line x1="280" y1="130" x2="294" y2="130"/>
+            <line x1="280" y1="144" x2="294" y2="144"/>
+          </g>
+          <!-- base / keyboard unit -->
+          <rect x="20" y="184" width="268" height="44" rx="8" fill="#D8E2DA" stroke="#111827" stroke-width="4"/>
+          <!-- floppy slot in base -->
+          <rect x="34" y="194" width="62" height="6" rx="2" fill="#111827"/>
+          <!-- keyboard keys hint -->
+          <g stroke="#111827" stroke-width="1.5" fill="#FFF7D6">
+            <rect x="110" y="206" width="14" height="10" rx="2"/>
+            <rect x="128" y="206" width="14" height="10" rx="2"/>
+            <rect x="146" y="206" width="14" height="10" rx="2"/>
+            <rect x="164" y="206" width="14" height="10" rx="2"/>
+            <rect x="182" y="206" width="14" height="10" rx="2"/>
+            <rect x="200" y="206" width="14" height="10" rx="2"/>
+            <rect x="218" y="206" width="14" height="10" rx="2"/>
+            <rect x="236" y="206" width="14" height="10" rx="2"/>
+          </g>
+          <!-- monitor brand label -->
+          <text x="240" y="178" font-family="Inter, sans-serif" font-weight="900" font-size="9" fill="#111827" letter-spacing=".8">v0.2</text>
+        </svg>
+      </div>
+
+      <!-- ── Live system stage (sits directly below the CRT) ───── -->
+      <div class="stage fade-up fade-up-2" aria-label="Live operations preview">
+        <div class="stage-bar">
+          <div class="stage-bar-left">
+            <div class="stage-dots">
+              <span class="stage-dot r"></span>
+              <span class="stage-dot y"></span>
+              <span class="stage-dot g"></span>
+            </div>
+            <span class="stage-bar-title">ralpharium · live</span>
+          </div>
+          <span class="pill pill-acc"><span class="dot"></span><span id="heroStatePill">connecting</span></span>
+        </div>
+
+        <div class="stage-body">
+          <!-- Topology: Ralph artifacts orbiting the loop runner -->
+          <div class="topology" id="topology">
+            <svg viewBox="0 0 520 320" preserveAspectRatio="xMidYMid meet" aria-label="Ralph Loop topology">
+              <defs>
+                <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%"  stop-color="#b6f569" stop-opacity=".18"/>
+                  <stop offset="100%" stop-color="#b6f569" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+
+              <!-- decorative rings -->
+              <circle class="ring" cx="260" cy="160" r="120"/>
+              <circle class="ring" cx="260" cy="160" r="78"/>
+
+              <!-- core: the loop runner -->
+              <circle cx="260" cy="160" r="80" fill="url(#coreGlow)"/>
+              <circle class="core" cx="260" cy="160" r="36"/>
+              <text class="core-label" x="260" y="158">LOOP</text>
+              <text x="260" y="174" class="core-label" style="font-size:7px; fill:#6b7080">runner</text>
+
+              <!-- Artifacts around the orbit -->
+              <g id="topoNodes">
+                <g transform="translate(260,40)"  data-node="prompt"><circle class="node-bg on" r="22"/><text class="node-label on" y="2">PROMPT</text></g>
+                <g transform="translate(388,90)"  data-node="plan"><circle class="node-bg" r="22"/><text class="node-label" y="2">PLAN</text></g>
+                <g transform="translate(440,200)" data-node="agents"><circle class="node-bg" r="22"/><text class="node-label" y="2">AGENTS</text></g>
+                <g transform="translate(360,280)" data-node="specs"><circle class="node-bg" r="22"/><text class="node-label" y="2">SPECS</text></g>
+                <g transform="translate(160,280)" data-node="tests"><circle class="node-bg" r="22"/><text class="node-label" y="2">TESTS</text></g>
+                <g transform="translate(80,200)"  data-node="lint"><circle class="node-bg" r="22"/><text class="node-label" y="2">LINT</text></g>
+                <g transform="translate(132,90)"  data-node="commits"><circle class="node-bg" r="22"/><text class="node-label" y="2">COMMIT</text></g>
+                <g transform="translate(40,40)"   data-node="guards"><circle class="node-bg" r="22"/><text class="node-label" y="2">GUARDS</text></g>
+              </g>
+
+              <!-- flow edges (curved) -->
+              <path class="edge"      d="M260 60   C 320 60, 380 60, 388 90"/>
+              <path class="edge-flow" d="M260 60   C 320 60, 380 60, 388 90"/>
+              <path class="edge"      d="M388 90   C 430 130, 440 170, 440 200"/>
+              <path class="edge-flow" d="M388 90   C 430 130, 440 170, 440 200"/>
+              <path class="edge"      d="M440 200  C 410 250, 380 270, 360 280"/>
+              <path class="edge-flow" d="M440 200  C 410 250, 380 270, 360 280"/>
+              <path class="edge"      d="M360 280  C 280 300, 240 300, 160 280"/>
+              <path class="edge-flow" d="M360 280  C 280 300, 240 300, 160 280"/>
+              <path class="edge"      d="M160 280  C 110 270, 90 240, 80 200"/>
+              <path class="edge-flow" d="M160 280  C 110 270, 90 240, 80 200"/>
+              <path class="edge"      d="M80 200   C 80 150, 110 110, 132 90"/>
+              <path class="edge-flow" d="M80 200   C 80 150, 110 110, 132 90"/>
+              <path class="edge"      d="M132 90   C 100 70, 70 60, 40 40"/>
+              <path class="edge-flow" d="M132 90   C 100 70, 70 60, 40 40"/>
+            </svg>
+          </div>
+
+          <!-- Live ops snapshot -->
+          <div class="hex-preview">
+            <div class="hex-preview-head">
+              <span><span class="dot" style="background:var(--acc)"></span> &nbsp; ops snapshot · <span id="heroBranch">repo</span></span>
+              <span>updated <span id="heroAgo">just now</span></span>
+            </div>
+            <div class="hex-preview-body" id="heroSnapshot">connecting to backend...</div>
+          </div>
+        </div>
+      </div>
+      </div><!-- /.hero-right-col -->
+    </div>
+
+    <!-- Springfield-style skyline: rolling hills, RALPH STUDIO hilltop sign,
+         cartoon townscape, sun, tire fire with smoke, donut shop, walking
+         pedestrians, twin nuclear cooling towers with atomic symbols + animated steam.
+         Inline SVG only — original cartoon art, no copyrighted assets. -->
+    <div class="springfield-skyline" aria-hidden="true">
+      <svg viewBox="0 0 1400 320" preserveAspectRatio="xMidYEnd slice">
+        <defs>
+          <!-- Steam plume (rises out of a cooling tower) -->
+          <radialGradient id="steam" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity=".95"/>
+            <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+          </radialGradient>
+          <!-- Atomic orbital symbol -->
+          <symbol id="atom" viewBox="0 0 60 60">
+            <circle cx="30" cy="30" r="4" fill="#111827"/>
+            <ellipse cx="30" cy="30" rx="22" ry="8" fill="none" stroke="#111827" stroke-width="2.5"/>
+            <ellipse cx="30" cy="30" rx="22" ry="8" transform="rotate(60 30 30)" fill="none" stroke="#111827" stroke-width="2.5"/>
+            <ellipse cx="30" cy="30" rx="22" ry="8" transform="rotate(-60 30 30)" fill="none" stroke="#111827" stroke-width="2.5"/>
+          </symbol>
+          <!-- Pine tree -->
+          <symbol id="pine" viewBox="0 0 30 50">
+            <path d="M15 2 L26 24 L20 24 L28 40 L18 40 L18 48 L12 48 L12 40 L2 40 L10 24 L4 24 Z" fill="#0F3A28" stroke="#111827" stroke-width="1.5"/>
+          </symbol>
+          <!-- Generic cartoon townsperson — yellow round head, big eyes,
+               colored shirt. Original art, not a copyrighted character. -->
+          <symbol id="walker" viewBox="0 0 18 36">
+            <!-- legs -->
+            <rect x="6"  y="26" width="2.5" height="9" fill="#3B5BA5"/>
+            <rect x="9.5" y="26" width="2.5" height="9" fill="#3B5BA5"/>
+            <!-- shoes -->
+            <ellipse cx="6.5" cy="35" rx="2.5" ry="1.2" fill="#111827"/>
+            <ellipse cx="11.5" cy="35" rx="2.5" ry="1.2" fill="#111827"/>
+            <!-- shirt body -->
+            <path d="M3 16 Q 9 14 15 16 L 14 27 L 4 27 Z" fill="#70C7FF" stroke="#111827" stroke-width="1.2"/>
+            <!-- arms -->
+            <path d="M3 17 L 1 26" stroke="#FFD90F" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M15 17 L 17 26" stroke="#FFD90F" stroke-width="2.4" stroke-linecap="round"/>
+            <!-- yellow round head -->
+            <circle cx="9" cy="9" r="6.4" fill="#FFD90F" stroke="#111827" stroke-width="1.4"/>
+            <!-- big white eyes -->
+            <circle cx="6.6" cy="8.3" r="2"   fill="#FFFFFF" stroke="#111827" stroke-width=".9"/>
+            <circle cx="11.4" cy="8.3" r="2"  fill="#FFFFFF" stroke="#111827" stroke-width=".9"/>
+            <circle cx="6.7" cy="8.4" r=".7" fill="#111827"/>
+            <circle cx="11.5" cy="8.4" r=".7" fill="#111827"/>
+            <!-- smile -->
+            <path d="M6.5 11.6 Q 9 13.2 11.5 11.6" fill="none" stroke="#111827" stroke-width=".9" stroke-linecap="round"/>
+          </symbol>
+          <!-- Variant townsperson (red shirt) -->
+          <symbol id="walker-r" viewBox="0 0 18 36">
+            <rect x="6"  y="26" width="2.5" height="9" fill="#234E3A"/>
+            <rect x="9.5" y="26" width="2.5" height="9" fill="#234E3A"/>
+            <ellipse cx="6.5" cy="35" rx="2.5" ry="1.2" fill="#111827"/>
+            <ellipse cx="11.5" cy="35" rx="2.5" ry="1.2" fill="#111827"/>
+            <path d="M3 16 Q 9 14 15 16 L 14 27 L 4 27 Z" fill="#E84A5F" stroke="#111827" stroke-width="1.2"/>
+            <path d="M3 17 L 1 26" stroke="#FFD90F" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M15 17 L 17 26" stroke="#FFD90F" stroke-width="2.4" stroke-linecap="round"/>
+            <circle cx="9" cy="9" r="6.4" fill="#FFD90F" stroke="#111827" stroke-width="1.4"/>
+            <circle cx="6.6" cy="8.3" r="2"   fill="#FFFFFF" stroke="#111827" stroke-width=".9"/>
+            <circle cx="11.4" cy="8.3" r="2"  fill="#FFFFFF" stroke="#111827" stroke-width=".9"/>
+            <circle cx="6.7" cy="8.4" r=".7" fill="#111827"/>
+            <circle cx="11.5" cy="8.4" r=".7" fill="#111827"/>
+            <path d="M6.5 11.6 Q 9 13.2 11.5 11.6" fill="none" stroke="#111827" stroke-width=".9" stroke-linecap="round"/>
+            <path d="M3 4 Q 9 1 15 4 L 15 6 L 3 6 Z" fill="#7A4D38" stroke="#111827" stroke-width="1"/>
+          </symbol>
+          <!-- Variant townsperson (purple dress) -->
+          <symbol id="walker-p" viewBox="0 0 18 36">
+            <rect x="6"  y="26" width="2.5" height="9" fill="#FFD90F"/>
+            <rect x="9.5" y="26" width="2.5" height="9" fill="#FFD90F"/>
+            <ellipse cx="6.5" cy="35" rx="2.5" ry="1.2" fill="#B07AC8"/>
+            <ellipse cx="11.5" cy="35" rx="2.5" ry="1.2" fill="#B07AC8"/>
+            <path d="M3 16 Q 9 14 15 16 L 16 27 L 2 27 Z" fill="#B07AC8" stroke="#111827" stroke-width="1.2"/>
+            <path d="M3 17 L 1 26" stroke="#FFD90F" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M15 17 L 17 26" stroke="#FFD90F" stroke-width="2.4" stroke-linecap="round"/>
+            <circle cx="9" cy="9" r="6.4" fill="#FFD90F" stroke="#111827" stroke-width="1.4"/>
+            <!-- tall blue beehive hair (silhouette) -->
+            <path d="M4 7 Q 6 -2 9 0 Q 12 -2 14 7 Z" fill="#3B5BA5" stroke="#111827" stroke-width="1"/>
+            <circle cx="6.6" cy="9.3" r="2"   fill="#FFFFFF" stroke="#111827" stroke-width=".9"/>
+            <circle cx="11.4" cy="9.3" r="2"  fill="#FFFFFF" stroke="#111827" stroke-width=".9"/>
+            <circle cx="6.7" cy="9.4" r=".7" fill="#111827"/>
+            <circle cx="11.5" cy="9.4" r=".7" fill="#111827"/>
+            <path d="M6.5 12.4 Q 9 13.8 11.5 12.4" fill="none" stroke="#111827" stroke-width=".9" stroke-linecap="round"/>
+          </symbol>
+          <!-- Yellow school bus -->
+          <symbol id="bus" viewBox="0 0 90 36">
+            <rect x="0" y="6"  width="78" height="22" rx="3" fill="#FFD90F" stroke="#111827" stroke-width="2"/>
+            <rect x="78" y="12" width="10" height="16" rx="2" fill="#FFD90F" stroke="#111827" stroke-width="2"/>
+            <rect x="6"  y="10" width="10" height="9" fill="#7AB8E8" stroke="#111827" stroke-width="1.5"/>
+            <rect x="20" y="10" width="10" height="9" fill="#7AB8E8" stroke="#111827" stroke-width="1.5"/>
+            <rect x="34" y="10" width="10" height="9" fill="#7AB8E8" stroke="#111827" stroke-width="1.5"/>
+            <rect x="48" y="10" width="10" height="9" fill="#7AB8E8" stroke="#111827" stroke-width="1.5"/>
+            <rect x="62" y="10" width="14" height="13" fill="#7AB8E8" stroke="#111827" stroke-width="1.5"/>
+            <rect x="0" y="24" width="78" height="3" fill="#111827"/>
+            <circle cx="14" cy="29" r="4.5" fill="#111827"/>
+            <circle cx="14" cy="29" r="2"   fill="#9aa1ae"/>
+            <circle cx="62" cy="29" r="4.5" fill="#111827"/>
+            <circle cx="62" cy="29" r="2"   fill="#9aa1ae"/>
+            <text x="34" y="22" font-family="Impact, sans-serif" font-weight="900" font-size="9" fill="#111827" text-anchor="middle">SCHOOL</text>
+          </symbol>
+          <!-- Pink-glazed donut with sprinkles — Springfield motif -->
+          <symbol id="donut" viewBox="0 0 40 40">
+            <circle cx="20" cy="20" r="16" fill="#F7A8D8" stroke="#111827" stroke-width="2"/>
+            <circle cx="20" cy="20" r="6"  fill="#FFF7D6" stroke="#111827" stroke-width="1.5"/>
+            <path d="M8 16 Q 12 13 16 16" fill="none" stroke="#FFF7D6" stroke-width="1.5" opacity=".8"/>
+            <line x1="11" y1="11" x2="13" y2="14" stroke="#FFD90F" stroke-width="2" stroke-linecap="round"/>
+            <line x1="26" y1="9"  x2="28" y2="12" stroke="#70C7FF" stroke-width="2" stroke-linecap="round"/>
+            <line x1="29" y1="22" x2="31" y2="25" stroke="#B6F569" stroke-width="2" stroke-linecap="round"/>
+            <line x1="14" y1="29" x2="16" y2="32" stroke="#E84A5F" stroke-width="2" stroke-linecap="round"/>
+            <line x1="22" y1="32" x2="24" y2="29" stroke="#FFD90F" stroke-width="2" stroke-linecap="round"/>
+          </symbol>
+          <!-- Palm tree (Springfield's "anywhere USA" decoration) -->
+          <symbol id="palm" viewBox="0 0 30 60">
+            <path d="M14 60 L14 28 Q 13 22 15 18" fill="none" stroke="#7A4D38" stroke-width="3" stroke-linecap="round"/>
+            <path d="M15 18 Q 6 14 1 18 Q 7 14 14 17"  fill="#3F8755" stroke="#111827" stroke-width="1.5"/>
+            <path d="M15 18 Q 24 14 29 18 Q 23 14 16 17" fill="#3F8755" stroke="#111827" stroke-width="1.5"/>
+            <path d="M15 17 Q 14 6 8 2  Q 14 8 15 17"  fill="#3F8755" stroke="#111827" stroke-width="1.5"/>
+            <path d="M15 17 Q 16 6 22 2 Q 16 8 15 17"  fill="#3F8755" stroke="#111827" stroke-width="1.5"/>
+            <circle cx="13" cy="20" r="2" fill="#7A4D38"/>
+            <circle cx="17" cy="22" r="2" fill="#7A4D38"/>
+          </symbol>
+        </defs>
+
+        <!-- Floating donuts in the sky (Springfield motif) -->
+        <g class="ss-floating-donuts" aria-hidden="true">
+          <use href="#donut" x="220"  y="40"  width="36" height="36"/>
+          <use href="#donut" x="640"  y="22"  width="28" height="28"/>
+          <use href="#donut" x="1040" y="48"  width="32" height="32"/>
+        </g>
+
+        <!-- Springfield smiley sun -->
+        <g class="ss-sun" transform="translate(1280,52)">
+          <g class="ss-sun-rays" stroke="#FFD90F" stroke-width="3" stroke-linecap="round">
+            <line x1="0" y1="-50" x2="0" y2="-38"/>
+            <line x1="0" y1="38"  x2="0" y2="50"/>
+            <line x1="-50" y1="0" x2="-38" y2="0"/>
+            <line x1="38"  y1="0" x2="50"  y2="0"/>
+            <line x1="-36" y1="-36" x2="-28" y2="-28"/>
+            <line x1="28"  y1="28"  x2="36"  y2="36"/>
+            <line x1="-36" y1="36"  x2="-28" y2="28"/>
+            <line x1="28"  y1="-28" x2="36"  y2="-36"/>
+          </g>
+          <circle cx="0" cy="0" r="28" fill="#FFD90F" stroke="#111827" stroke-width="3"/>
+          <!-- cartoon face -->
+          <circle cx="-9" cy="-4" r="2.4" fill="#111827"/>
+          <circle cx="9"  cy="-4" r="2.4" fill="#111827"/>
+          <path d="M-10 6 Q 0 16 10 6" fill="none" stroke="#111827" stroke-width="2.5" stroke-linecap="round"/>
+          <ellipse cx="-13" cy="6" rx="3" ry="1.6" fill="#F4A8B8" opacity=".75"/>
+          <ellipse cx="13"  cy="6" rx="3" ry="1.6" fill="#F4A8B8" opacity=".75"/>
+        </g>
+
+        <!-- Far rolling hills (lightest, faded) -->
+        <path d="M0 220 Q 180 170 360 200 Q 520 220 700 180 Q 880 150 1080 195 Q 1260 230 1400 200 L 1400 280 L 0 280 Z"
+              fill="#5BA070" opacity=".55"/>
+        <!-- Mid hills -->
+        <path d="M0 240 Q 220 190 460 220 Q 640 244 880 210 Q 1080 184 1260 224 Q 1340 244 1400 232 L 1400 280 L 0 280 Z"
+              fill="#3F8755" opacity=".85"/>
+
+        <!-- "RALPHARIUM" hilltop sign — chunky billboard text -->
+        <g transform="translate(280,150)">
+          <text x="0" y="28"
+                font-family="Impact, 'Arial Black', 'Helvetica Neue', sans-serif"
+                font-weight="900"
+                font-size="38"
+                fill="#FFFFFF"
+                stroke="#111827"
+                stroke-width="2.5"
+                paint-order="stroke fill"
+                letter-spacing="2">RALPHARIUM</text>
+          <!-- support struts behind sign -->
+          <line x1="3"   y1="32" x2="3"   y2="72" stroke="#111827" stroke-width="2"/>
+          <line x1="45"  y1="32" x2="45"  y2="68" stroke="#111827" stroke-width="2"/>
+          <line x1="100" y1="32" x2="100" y2="62" stroke="#111827" stroke-width="2"/>
+          <line x1="160" y1="32" x2="160" y2="58" stroke="#111827" stroke-width="2"/>
+          <line x1="220" y1="32" x2="220" y2="56" stroke="#111827" stroke-width="2"/>
+          <line x1="280" y1="32" x2="280" y2="60" stroke="#111827" stroke-width="2"/>
+        </g>
+
+        <!-- Foreground green hill layer -->
+        <path d="M0 250 Q 240 220 480 245 Q 720 268 980 240 Q 1200 218 1400 248 L 1400 280 L 0 280 Z"
+              fill="#2C6E48"/>
+
+        <!-- Pine + palm trees scattered along the foreground hill -->
+        <use href="#pine" x="80"   y="218" width="22" height="38"/>
+        <use href="#palm" x="120"  y="208" width="22" height="48"/>
+        <use href="#pine" x="160"  y="220" width="20" height="36"/>
+        <use href="#pine" x="540"  y="222" width="22" height="38"/>
+        <use href="#palm" x="572"  y="210" width="22" height="48"/>
+        <use href="#pine" x="980"  y="220" width="22" height="38"/>
+        <use href="#palm" x="1010" y="208" width="22" height="50"/>
+        <use href="#pine" x="1280" y="222" width="22" height="38"/>
+        <use href="#palm" x="1310" y="210" width="22" height="48"/>
+
+        <!-- Cartoon town: a row of colorful buildings (Springfield-style block town) -->
+        <g stroke="#111827" stroke-width="2">
+          <!-- 1: pink bakery -->
+          <rect x="220" y="218" width="46" height="40" fill="#F7A8D8"/>
+          <rect x="226" y="206" width="34" height="14" fill="#FFD90F"/>
+          <rect x="230" y="232" width="10" height="14" fill="#234E3A"/>
+          <rect x="248" y="226" width="10" height="10" fill="#70C7FF"/>
+          <!-- 2: blue building w/ peaked roof -->
+          <path d="M270 218 L 290 200 L 310 218 L 310 258 L 270 258 Z" fill="#70C7FF"/>
+          <rect x="280" y="232" width="10" height="14" fill="#FFF7D6"/>
+          <rect x="296" y="232" width="10" height="14" fill="#FFF7D6"/>
+          <!-- 3: Krusty Burger (yellow shop with red sign) -->
+          <rect x="320" y="220" width="60" height="38" fill="#FFD90F"/>
+          <rect x="328" y="208" width="44" height="14" fill="#E84A5F"/>
+          <text x="350" y="219" font-family="Impact, 'Arial Black', sans-serif" font-weight="900" font-size="8.5" fill="#FFF7D6" text-anchor="middle" letter-spacing=".5">KRUSTY</text>
+          <rect x="334" y="232" width="14" height="20" fill="#234E3A"/>
+          <rect x="356" y="232" width="14" height="14" fill="#FFF7D6"/>
+          <!-- 4: purple two-story -->
+          <rect x="386" y="208" width="44" height="50" fill="#B07AC8"/>
+          <rect x="392" y="216" width="10" height="10" fill="#FFD90F"/>
+          <rect x="408" y="216" width="10" height="10" fill="#FFD90F"/>
+          <rect x="392" y="234" width="10" height="10" fill="#FFD90F"/>
+          <rect x="408" y="234" width="10" height="10" fill="#FFD90F"/>
+          <rect x="400" y="246" width="14" height="12" fill="#234E3A"/>
+          <!-- 5: small green house -->
+          <path d="M438 218 L 458 202 L 478 218 L 478 258 L 438 258 Z" fill="#A8D8B8"/>
+          <rect x="452" y="234" width="12" height="22" fill="#234E3A"/>
+          <rect x="442" y="226" width="8" height="8" fill="#FFD90F"/>
+          <!-- 6: tall pink condo -->
+          <rect x="486" y="200" width="40" height="58" fill="#F4C2DA"/>
+          <g fill="#FFD90F" opacity=".85">
+            <rect x="492" y="210" width="6" height="6"/><rect x="504" y="210" width="6" height="6"/><rect x="516" y="210" width="6" height="6"/>
+            <rect x="492" y="222" width="6" height="6"/><rect x="504" y="222" width="6" height="6"/><rect x="516" y="222" width="6" height="6"/>
+            <rect x="492" y="234" width="6" height="6"/><rect x="504" y="234" width="6" height="6"/><rect x="516" y="234" width="6" height="6"/>
+            <rect x="492" y="246" width="6" height="6"/><rect x="504" y="246" width="6" height="6"/><rect x="516" y="246" width="6" height="6"/>
+          </g>
+          <!-- 7: church-like with dome -->
+          <rect x="600" y="218" width="46" height="40" fill="#FFF7D6"/>
+          <ellipse cx="623" cy="218" rx="25" ry="18" fill="#FFD90F"/>
+          <rect x="618" y="184" width="10" height="20" fill="#111827"/>
+          <line x1="623" y1="180" x2="623" y2="170" stroke="#111827" stroke-width="2.5"/>
+          <circle cx="623" cy="168" r="3" fill="#FFD90F"/>
+          <rect x="618" y="232" width="10" height="22" fill="#234E3A"/>
+          <!-- 8: Moe's Tavern (brown lodge with red awning) -->
+          <rect x="700" y="222" width="50" height="36" fill="#A8765A"/>
+          <path d="M700 222 L 725 204 L 750 222 Z" fill="#7A4D38"/>
+          <rect x="704" y="226" width="42" height="9" fill="#B8323F" stroke="#111827" stroke-width="1.5"/>
+          <text x="725" y="233" font-family="Impact, 'Arial Black', sans-serif" font-weight="900" font-size="7" fill="#FFF7D6" text-anchor="middle" letter-spacing=".6">MOE'S</text>
+          <rect x="710" y="240" width="14" height="18" fill="#234E3A"/>
+          <rect x="730" y="240" width="14" height="10" fill="#FFD90F"/>
+          <!-- 9: Kwik-E-Mart (blue shop w/ pink sign) -->
+          <rect x="760" y="220" width="50" height="38" fill="#70C7FF"/>
+          <rect x="766" y="206" width="38" height="14" fill="#F7A8D8"/>
+          <text x="785" y="216" font-family="Impact, 'Arial Black', sans-serif" font-weight="900" font-size="7" fill="#111827" text-anchor="middle" letter-spacing=".25">KWIK-E</text>
+          <rect x="772" y="234" width="14" height="22" fill="#234E3A"/>
+          <rect x="794" y="234" width="12" height="12" fill="#FFF7D6"/>
+          <!-- 10: yellow tower w/ ladder -->
+          <rect x="820" y="200" width="32" height="58" fill="#FFD90F"/>
+          <line x1="836" y1="200" x2="836" y2="258" stroke="#111827" stroke-width="1.5"/>
+          <line x1="824" y1="210" x2="848" y2="210" stroke="#111827" stroke-width="1"/>
+          <line x1="824" y1="222" x2="848" y2="222" stroke="#111827" stroke-width="1"/>
+          <line x1="824" y1="234" x2="848" y2="234" stroke="#111827" stroke-width="1"/>
+          <line x1="824" y1="246" x2="848" y2="246" stroke="#111827" stroke-width="1"/>
+        </g>
+
+        <!-- Right cluster: fenced nuclear plant + cooling towers -->
+        <g stroke="#111827" stroke-width="2">
+          <!-- chain-link fence base -->
+          <rect x="1060" y="244" width="320" height="14" fill="#0F3A28"/>
+          <!-- pink reactor building -->
+          <rect x="1080" y="208" width="120" height="50" fill="#F4C2DA"/>
+          <rect x="1080" y="208" width="120" height="6"  fill="#E84A5F"/>
+          <rect x="1090" y="222" width="22" height="14" fill="#FFD90F"/>
+          <rect x="1116" y="222" width="22" height="14" fill="#FFD90F"/>
+          <rect x="1142" y="222" width="22" height="14" fill="#FFD90F"/>
+          <rect x="1168" y="222" width="22" height="14" fill="#FFD90F"/>
+          <rect x="1108" y="240" width="22" height="18" fill="#234E3A"/>
+          <!-- water silo -->
+          <rect x="1218" y="220" width="22" height="38" fill="#A8765A"/>
+          <ellipse cx="1229" cy="220" rx="11" ry="4" fill="#A8765A"/>
+          <!-- twin cooling towers -->
+          <g>
+            <path d="M 1248 258 L 1258 188 Q 1280 168 1302 188 L 1312 258 Z" fill="#D8DEE0"/>
+            <ellipse cx="1280" cy="184" rx="22" ry="6" fill="#A8B0B5"/>
+            <use href="#atom" x="1264" y="208" width="32" height="32"/>
+            <ellipse cx="1280" cy="170" rx="38" ry="14" fill="url(#steam)"/>
+            <ellipse cx="1290" cy="148" rx="32" ry="12" fill="url(#steam)"/>
+            <ellipse cx="1278" cy="128" rx="40" ry="14" fill="url(#steam)"/>
+          </g>
+          <g>
+            <path d="M 1320 258 L 1328 192 Q 1348 174 1368 192 L 1376 258 Z" fill="#D8DEE0"/>
+            <ellipse cx="1348" cy="188" rx="20" ry="5" fill="#A8B0B5"/>
+            <use href="#atom" x="1332" y="210" width="28" height="28"/>
+            <ellipse cx="1348" cy="174" rx="32" ry="12" fill="url(#steam)"/>
+            <ellipse cx="1356" cy="156" rx="28" ry="10" fill="url(#steam)"/>
+          </g>
+          <!-- Welcome to Springfield-style yellow road sign — but says "RALPH" -->
+          <g transform="translate(880,236)">
+            <rect x="0" y="0" width="72" height="22" fill="#FFD90F" stroke="#111827" stroke-width="2"/>
+            <line x1="36" y1="22" x2="36" y2="46" stroke="#111827" stroke-width="3"/>
+            <text x="36" y="15" font-family="Inter, sans-serif" font-weight="900" font-size="11" fill="#111827" text-anchor="middle" letter-spacing=".5">RALPH</text>
+          </g>
+        </g>
+
+        <!-- Power-line silhouettes between town and plant -->
+        <g stroke="#111827" stroke-width="1.5">
+          <rect x="970" y="200" width="3" height="48" fill="#111827"/>
+          <line x1="971" y1="208" x2="1080" y2="220"/>
+          <line x1="971" y1="218" x2="1080" y2="230"/>
+          <line x1="852" y1="200" x2="971" y2="208"/>
+          <line x1="852" y1="210" x2="971" y2="218"/>
+        </g>
+
+        <!-- Tire-pile fire on the far left, with rising smoke -->
+        <g class="ss-fire" transform="translate(60,236)">
+          <!-- smoke plumes (rise + fade) -->
+          <g class="ss-smoke">
+            <ellipse class="ss-smoke-1" cx="14" cy="-10" rx="22" ry="9"  fill="#3a3a3a" opacity=".75"/>
+            <ellipse class="ss-smoke-2" cx="22" cy="-40" rx="26" ry="10" fill="#5a5a5a" opacity=".70"/>
+            <ellipse class="ss-smoke-3" cx="10" cy="-72" rx="32" ry="12" fill="#7a7a7a" opacity=".60"/>
+            <ellipse class="ss-smoke-4" cx="26" cy="-104" rx="38" ry="13" fill="#9a9a9a" opacity=".50"/>
+          </g>
+          <!-- flames -->
+          <g class="ss-flames" stroke="#111827" stroke-width="1.5">
+            <path d="M 4 6 Q -2 -8 4 -16 Q 6 -8 8 -14 Q 12 -6 12 4 Z"  fill="#FFD90F"/>
+            <path d="M 16 4 Q 12 -10 18 -20 Q 22 -8 22 -16 Q 28 -6 28 6 Z" fill="#E84A5F"/>
+            <path d="M 26 8 Q 22 -4 30 -10 Q 34 0 34 8 Z" fill="#FFD90F"/>
+          </g>
+          <!-- pile of black tires -->
+          <g fill="#1a1a1a" stroke="#000" stroke-width="1.5">
+            <ellipse cx="0"  cy="14" rx="20" ry="6"/>
+            <ellipse cx="32" cy="14" rx="20" ry="6"/>
+            <ellipse cx="14" cy="6"  rx="20" ry="6"/>
+            <ellipse cx="0"  cy="0"  rx="18" ry="5"/>
+            <ellipse cx="28" cy="0"  rx="18" ry="5"/>
+            <ellipse cx="14" cy="-6" rx="16" ry="5"/>
+          </g>
+        </g>
+
+        <!-- Donut shop with rotating donut sign -->
+        <g class="ss-donut-shop">
+          <!-- shop building -->
+          <rect x="160" y="218" width="56" height="40" fill="#F4C2DA" stroke="#111827" stroke-width="2"/>
+          <rect x="160" y="214" width="56" height="6"  fill="#E84A5F" stroke="#111827" stroke-width="2"/>
+          <rect x="170" y="232" width="14" height="26" fill="#234E3A" stroke="#111827" stroke-width="2"/>
+          <rect x="190" y="230" width="20" height="12" fill="#FFF7D6" stroke="#111827" stroke-width="2"/>
+          <!-- pole -->
+          <line x1="188" y1="214" x2="188" y2="170" stroke="#111827" stroke-width="3"/>
+          <!-- rotating donut sign -->
+          <g class="ss-donut-sign" transform="translate(188 156)">
+            <circle r="20" fill="#F7A8D8" stroke="#111827" stroke-width="2.5"/>
+            <circle r="7"  fill="#0b0d12" stroke="#111827" stroke-width="2"/>
+            <path d="M-14 -6 Q -8 -10 -2 -6 T 10 -6 T 14 -2"
+                  fill="none" stroke="#FFD90F" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="-8" cy="-9"  r="1.4" fill="#70C7FF"/>
+            <circle cx="9"  cy="-7"  r="1.4" fill="#B6F569"/>
+            <circle cx="-4" cy="10"  r="1.4" fill="#E84A5F"/>
+            <circle cx="11" cy="9"   r="1.4" fill="#FFD90F"/>
+          </g>
+        </g>
+
+        <!-- Townspeople + school bus on the road -->
+        <g class="ss-walkers">
+          <use class="ss-walker ss-walker-1" href="#walker"   width="18" height="36" y="226"/>
+          <use class="ss-walker ss-walker-2" href="#walker-r" width="16" height="32" y="230"/>
+          <use class="ss-walker ss-walker-3" href="#walker-p" width="18" height="36" y="226"/>
+        </g>
+        <use class="ss-bus" href="#bus" x="-110" y="226" width="90" height="36"/>
+
+        <!-- Welcome billboard at the bottom-right entrance -->
+        <g class="ss-welcome" transform="translate(900,250)">
+          <!-- support posts -->
+          <rect x="6"   y="36" width="4" height="34" fill="#111827"/>
+          <rect x="166" y="36" width="4" height="34" fill="#111827"/>
+          <!-- yellow billboard -->
+          <rect x="-4" y="-6" width="180" height="48" fill="#FFD90F" stroke="#111827" stroke-width="3"/>
+          <rect x="2"  y="0"  width="168" height="36" fill="#FFF7D6" stroke="#111827" stroke-width="1.5"/>
+          <text x="86" y="13" font-family="Inter, sans-serif" font-weight="800" font-size="9"
+                fill="#111827" text-anchor="middle" letter-spacing=".5">WELCOME TO</text>
+          <text x="86" y="29" font-family="Inter, sans-serif" font-weight="900" font-size="13"
+                fill="#E84A5F" text-anchor="middle" letter-spacing=".3">RALPHARIUM</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Stats strip — plain-English value props -->
+    <div class="strip reveal">
+      <div class="strip-cell"><strong>Local</strong><span>Runs on your machine</span></div>
+      <div class="strip-cell"><strong>Any AI</strong><span>Claude · Codex · Aider · custom</span></div>
+      <div class="strip-cell"><strong>One-click</strong><span>Start / pause / stop</span></div>
+      <div class="strip-cell"><strong>Test-gated</strong><span>Stops on test failure</span></div>
+      <div class="strip-cell"><strong>Replay</strong><span>Inspect any iteration</span></div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT + HOW IT WORKS — combined explainer ────────────── -->
+  <section class="about wrap" id="how">
+    <div class="about-head reveal">
+      <span class="pill pill-yellow"><span class="dot"></span>About Ralpharium</span>
+      <h2>The Ralph Loop, made observable.</h2>
+      <p class="lead">Ralpharium is a local-first control plane for autonomous AI coding loops. You point it at a repo, pick a runner (Claude / Codex / Aider / any shell command), and click Start. It runs the AI in a tight cycle, gates each pass on tests and lint, and shows you exactly what changed — every iteration, every commit, every failure — in a dashboard you control. Nothing leaves your machine.</p>
+    </div>
+
+    <!-- What it actually is — punchy 4-card overview -->
+    <div class="about-what reveal">
+      <span class="about-eyebrow">What it is, in one screen</span>
+      <h3>A local-first dashboard for autonomous AI coding loops.</h3>
+      <div class="about-what-grid">
+        <div class="about-what-cell">
+          <div class="about-what-icon" style="background:var(--acc,#b6f569)">⌘</div>
+          <strong>A small Python daemon</strong>
+          <p>Runs in your terminal at <code>localhost:3000</code>. Spawns your AI runner as a subprocess, watches stdout, parses output, persists every iteration. No cloud, no accounts, no telemetry.</p>
+        </div>
+        <div class="about-what-cell">
+          <div class="about-what-icon" style="background:var(--sky,#70C7FF)">⊞</div>
+          <strong>An operator dashboard</strong>
+          <p>Start / pause / panic-stop the loop. Iteration timeline, plan health, validation backpressure, spec coverage, and a live event stream — all updating without a refresh.</p>
+        </div>
+        <div class="about-what-cell">
+          <div class="about-what-icon" style="background:var(--pink,#F4A8B8)">◷</div>
+          <strong>8 specialized agents in shared memory</strong>
+          <p>Spec writer, researcher, planner, builder, reviewer, debugger, magpie, tagger. Each owns a slot in a 64KB <code>multiprocessing.shared_memory</code> segment and is observable on the RAM page.</p>
+        </div>
+        <div class="about-what-cell">
+          <div class="about-what-icon" style="background:var(--yellow,#FFD90F)">↻</div>
+          <strong>Replayable iteration history</strong>
+          <p>Every loop pass is appended to <code>.ralph/iterations.jsonl</code>: mode, status, files changed, commit SHA, validation, last 4KB of runner output. Click any row to inspect.</p>
+        </div>
+      </div>
+      <div class="about-what-foot">
+        <strong>Not</strong> a replacement for Claude / Codex / Aider — it <em>runs</em> them. Pick the runner, configure the command, click Start. Ralpharium provides the context, gates, observation, and stop conditions around it.
+      </div>
+    </div>
+
+    <!-- Lineage + Upgrades: from vanilla Ralph Loop → Ralpharium -->
+    <div class="about-lineage reveal">
+      <div class="about-lineage-l">
+        <span class="about-eyebrow">The original</span>
+        <h3>Vanilla Ralph Loop — powerful, but rough.</h3>
+        <p>The Ralph Wiggum technique by <a href="https://ghuntley.com/ralph/" target="_blank" rel="noreferrer">@ghuntley</a> is a methodology: run Claude in a bash <code>while</code> loop, treat it as a capable-but-naive executor, steer behavior with engineered context (<code>PROMPT.md</code>, <code>AGENTS.md</code>, <code>IMPLEMENTATION_PLAN.md</code>, <code>specs/*.md</code>) re-read every iteration. It works — but it has real pain points:</p>
+        <ul class="about-pain">
+          <li><strong>Black box.</strong> All you see is bash stdout streaming past. No way to inspect intermediate state.</li>
+          <li><strong>One monolithic prompt.</strong> Plan, code, validate, classify — all done in a single call. No specialization.</li>
+          <li><strong>Manual stop only.</strong> If Ralph rewrites the same file 5 times with the same error, you don't notice until you Ctrl-C and read the log.</li>
+          <li><strong>No replay.</strong> Past iterations live in <code>git log</code> at best. The reasoning, validation output, and prompts used are gone.</li>
+          <li><strong>No structured guardrails.</strong> Stop conditions are whatever your bash script remembers to check.</li>
+        </ul>
+        <p class="about-lineage-credit">Original playbook: <a href="https://github.com/ghuntley/how-to-ralph-wiggum" target="_blank" rel="noreferrer">github.com/ghuntley/how-to-ralph-wiggum</a></p>
+      </div>
+      <div class="about-lineage-r">
+        <span class="about-eyebrow">Ralpharium's upgrades</span>
+        <h3 class="about-upgrade-h">What we kept, fixed, and added.</h3>
+        <ul class="about-diff">
+          <li>
+            <strong>From black box → glass box.</strong>
+            <p>Every part of an iteration is observable in real time. Live blackboard, hex view of the shared-memory segment, event ring buffer, per-agent drill-down with prompt + decision history, replayable JSONL on disk.</p>
+          </li>
+          <li>
+            <strong>From 1 monolithic loop → 8 specialized agents.</strong>
+            <p><code>spec_writer</code> + <code>researcher</code> handle phase-1 context. <code>planner</code> + <code>builder</code> drive the build cycle. <code>reviewer</code> + <code>debugger</code> own validation backpressure. <code>magpie</code> + <code>tagger</code> capture and classify each iteration's output. Each has its own state, latency, and history.</p>
+          </li>
+          <li>
+            <strong>From <code>.md</code> files on disk → 64KB shared memory.</strong>
+            <p>Agents pass structured work through an OS-level <code>multiprocessing.shared_memory</code> segment instead of re-reading the same files every iteration. Fewer disk hits, instant cross-agent visibility, observable as live JSON.</p>
+          </li>
+          <li>
+            <strong>From manual Ctrl-C → real stop conditions.</strong>
+            <p>One-toggle gates: <code>stop_on_failure</code>, <code>stop_if_no_commit</code>, <code>stop_if_dirty_before_run</code>, <code>max_iterations</code>. Plus a thrash detector that pauses the loop when the same files modified 3+ times produce the same failure — before tokens get burned.</p>
+          </li>
+          <li>
+            <strong>From "tail bash logs" → replayable iterations.</strong>
+            <p>Append-only <code>.ralph/iterations.jsonl</code> stores every iteration's mode, status, files changed, validation result, command output (last 4KB), commit SHA, and failure reason. Click any row in the timeline to inspect or re-run.</p>
+          </li>
+          <li>
+            <strong>From single-shell session → REST + WebSocket API.</strong>
+            <p>Any tool can <code>POST /api/iterations</code> to start a pass and <code>PATCH</code> when it finishes. The dashboard subscribes to a live WebSocket — multiple tabs and external clients see the same state.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Inside an iteration — concrete data-flow walkthrough -->
+    <div class="about-flow reveal">
+      <span class="about-eyebrow">Inside an iteration</span>
+      <h3>What actually happens when you click Start.</h3>
+      <p class="about-flow-lead">A single iteration is one full pass of the 8-agent cycle. The daemon orchestrates it; the dashboard streams every step over WebSocket. Here's the sequence, end to end:</p>
+
+      <ol class="about-flow-steps">
+        <li>
+          <span class="about-flow-num">A</span>
+          <div>
+            <strong>Pre-flight — Planner + Researcher</strong>
+            <p>The <code>Planner</code> reads <code>IMPLEMENTATION_PLAN.md</code> and picks the first unchecked task. The <code>Researcher</code> scans the repo (branch, dirty state, spec count) and writes that context to the shared blackboard so every other agent sees the same snapshot.</p>
+          </div>
+        </li>
+        <li>
+          <span class="about-flow-num">B</span>
+          <div>
+            <strong>Build phase — Builder runs the subprocess</strong>
+            <p>The <code>Builder</code> spawns your runner command (e.g. <code>claude -p "$(cat PROMPT.md)"</code>) with <code>cwd</code> set to your repo. Stdout streams line-by-line into the RAM event log, parsed for errors and test mentions. The blackboard's <code>last_error</code>, <code>test_output</code>, and <code>pid</code> slots update in real time.</p>
+          </div>
+        </li>
+        <li>
+          <span class="about-flow-num">C</span>
+          <div>
+            <strong>Backpressure — Reviewer + Debugger</strong>
+            <p>When the subprocess exits, the <code>Reviewer</code> runs your validation gates (<code>npm test</code> / <code>lint</code> / <code>typecheck</code> / <code>build</code>) auto-detected from <code>package.json</code>. If anything fails, the <code>Debugger</code> classifies the failure (which check, what kind of error) and writes it to the blackboard. With <code>stop_on_failure</code> on, the loop halts here.</p>
+          </div>
+        </li>
+        <li>
+          <span class="about-flow-num">D</span>
+          <div>
+            <strong>Post-loop — Magpie + Tagger</strong>
+            <p>If the iteration produced a real commit, the <code>Magpie</code> collects the artifacts (commit SHA, files changed, scratchpad notes) and the <code>Tagger</code> classifies the iteration (feature / fix / refactor / docs) by looking at file paths and the iteration summary.</p>
+          </div>
+        </li>
+        <li>
+          <span class="about-flow-num">E</span>
+          <div>
+            <strong>Persist + broadcast</strong>
+            <p>The full iteration record (mode, status, files changed, commit SHA, validation results, last 4KB of runner output, failure reason) is appended to <code>.ralph/iterations.jsonl</code>. The daemon broadcasts a fresh snapshot over WebSocket — your dashboard timeline, RAM agent grid, plan health, and event stream all update without a refresh.</p>
+          </div>
+        </li>
+        <li>
+          <span class="about-flow-num">F</span>
+          <div>
+            <strong>Loop or stop</strong>
+            <p>The loop checks stop conditions (max iterations hit, panic, dirty tree, no commit, validation failed). If clean, it goes back to step A and picks the next plan task. The thrash detector watches for "same files modified with same error 3+ times" and pauses you before tokens are wasted.</p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="about-flow-foot">
+        <strong>Key idea:</strong> the AI runner does the actual code work. Ralpharium provides the <em>context, validation, observation, and stop conditions</em> around it — turning a one-shot prompt into a steerable, replayable loop.
+      </div>
+    </div>
+
+    <!-- 5-step how-it-works (kept, on chalkboard) -->
+    <article class="how-card chalk-card reveal">
+      <span class="chalk-eyebrow"><span class="dot"></span>How it works</span>
+      <h2 class="chalk-h">From terminal to dashboard in five steps.</h2>
+      <p class="lead">The whole product fits on one chalkboard. No accounts, no cloud — Ralpharium runs on your machine, talks to your AI CLI, and shows you what happened.</p>
+
+      <ol class="how-steps">
+        <li class="how-step">
+          <span class="how-num">1</span>
+          <strong>Scaffold the repo</strong>
+          <p>Run inside any folder. Creates <code>PROMPT.md</code>, <code>AGENTS.md</code>, <code>IMPLEMENTATION_PLAN.md</code>, <code>specs/</code>, and <code>.ralph/</code>.</p>
+          <code>npx ralpharium init</code>
+        </li>
+        <li class="how-step">
+          <span class="how-num">2</span>
+          <strong>Boot the daemon</strong>
+          <p>Spawns the FastAPI server, opens the dashboard automatically at <code>localhost:3000</code>.</p>
+          <code>npx ralpharium start</code>
+        </li>
+        <li class="how-step">
+          <span class="how-num">3</span>
+          <strong>Pick a runner + click Start</strong>
+          <p>In Loop configuration, choose Claude / Codex / Aider / custom. Empty command = safe fallback (so you can demo without auth).</p>
+        </li>
+        <li class="how-step">
+          <span class="how-num">4</span>
+          <strong>Watch it work</strong>
+          <p>Iteration timeline, plan health, validation, agent activity stream live. Open <code>npx ralpharium ram</code> for the under-the-hood debug view.</p>
+          <code>npx ralpharium ram</code>
+        </li>
+        <li class="how-step">
+          <span class="how-num">5</span>
+          <strong>Stop or continue</strong>
+          <p>Pause between iterations with <kbd>Space</kbd>, panic-stop with <kbd>Ctrl/⌘+P</kbd>, or let it loop until your stop conditions hit.</p>
+        </li>
+      </ol>
+    </article>
+
+    <!-- The tech — what's actually under the hood -->
+    <div class="about-tech reveal">
+      <span class="about-eyebrow">Under the hood</span>
+      <h3>The tech.</h3>
+      <div class="about-tech-grid">
+        <div class="about-tech-cell">
+          <strong>Backend</strong>
+          <p>Python 3.11+ FastAPI daemon. WebSocket for live updates, REST for first paint. Single Uvicorn process — no database, no message queue.</p>
+        </div>
+        <div class="about-tech-cell">
+          <strong>Shared memory</strong>
+          <p>An OS-level <code>multiprocessing.shared_memory</code> segment holds the live blackboard JSON. The 8 agents read and write structured slots; everything is observable in real time.</p>
+        </div>
+        <div class="about-tech-cell">
+          <strong>Frontend</strong>
+          <p>Vanilla JS + CSS. No framework, no build step, no bundler. The dashboard at <code>/dashboard</code> and the live debug view at <code>/ram</code> are static files served by the daemon.</p>
+        </div>
+        <div class="about-tech-cell">
+          <strong>Persistence</strong>
+          <p>Append-only JSONL at <code>.ralph/iterations.jsonl</code>. Every iteration's mode, status, files changed, validation result, and commit SHA — replayable, greppable, gitignorable.</p>
+        </div>
+        <div class="about-tech-cell">
+          <strong>Backpressure</strong>
+          <p>Auto-detects <code>npm test</code> / <code>lint</code> / <code>typecheck</code> / <code>build</code> from <code>package.json</code> (and Python equivalents). One-click validation, with optional stop-on-failure.</p>
+        </div>
+        <div class="about-tech-cell">
+          <strong>CLI</strong>
+          <p>Tiny Node launcher (<code>bin/ralph-studio.js</code>) that spawns the Python daemon. The npm bin is <code>ralpharium</code> (and <code>ralph-studio</code> for back-compat).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Glossary -->
+    <div class="about-glossary reveal" id="what">
+      <span class="about-eyebrow">Plain English</span>
+      <h3>Five words you'll see everywhere.</h3>
+      <dl class="glossary">
+        <div class="glossary-item">
+          <dt>Runner</dt>
+          <dd>The AI coding CLI you choose — Claude Code, Codex, Aider, OpenRouter via aider, or any custom shell command.</dd>
+        </div>
+        <div class="glossary-item cyan">
+          <dt>Loop</dt>
+          <dd>One run of the runner. A "continuous loop" is repeated runs with stop conditions you set.</dd>
+        </div>
+        <div class="glossary-item green">
+          <dt>Dashboard</dt>
+          <dd>The control room at <code>/dashboard</code>. Start, pause, stop. Watch iterations stream in.</dd>
+        </div>
+        <div class="glossary-item pink">
+          <dt>RAM</dt>
+          <dd>The live debug page at <code>/ram</code>. Real-time internals — 8 agents, blackboard, event stream, hex viewer.</dd>
+        </div>
+        <div class="glossary-item amber">
+          <dt>Backpressure</dt>
+          <dd>Tests, lint, typecheck, and git checks that gate the loop. If they fail, Ralpharium stops the run before bad code lands.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── INSTALL ─────────────────────────────────────────────────── -->
+  <section class="install wrap" id="install">
+    <div class="install-card reveal">
+      <div class="install-copy">
+        <span class="pill pill-yellow"><span class="dot"></span>Install</span>
+        <h2>Two commands to a working dashboard.</h2>
+        <p>Live on npm as <a href="https://www.npmjs.com/package/ralpharium" target="_blank" rel="noreferrer"><code>ralpharium</code></a>. Drop it into any repo, <code>init</code> scaffolds the files, <code>start</code> opens the control room at <code>localhost:3000</code>. Nothing leaves your machine.</p>
+
+        <div class="install-reqs">
+          <strong>Requires</strong>
+          <ul>
+            <li><strong>Node 18+</strong> — comes with <code>npx</code>. Check: <code>node -v</code></li>
+            <li><strong>Python 3.11+</strong> — backend daemon. Check: <code>python --version</code> (or <code>python3 --version</code>). Get it at <a href="https://www.python.org/downloads/" target="_blank" rel="noreferrer">python.org</a> if missing.</li>
+            <li><em>Optional:</em> Claude / Codex / Aider CLI — only needed for real iterations. Empty runner command = safe fallback so you can demo without auth.</li>
+          </ul>
+          <p class="install-reqs-foot"><strong>FastAPI &amp; uvicorn</strong> auto-install on first run — you don't have to do anything.</p>
+        </div>
+      </div>
+
+      <div class="terminal" aria-label="Install commands">
+        <div class="terminal-bar">
+          <div class="stage-dots">
+            <span class="stage-dot r"></span>
+            <span class="stage-dot y"></span>
+            <span class="stage-dot g"></span>
+          </div>
+          <span class="terminal-title">~/your-repo · zsh</span>
+          <button class="terminal-copy" data-copy="npx ralpharium init&#10;npx ralpharium start" title="Copy commands">copy</button>
+        </div>
+        <div class="terminal-body">
+          <div class="line muted"># 1. scaffold the four Ralph artifacts in your repo</div>
+          <div class="line"><span class="prompt">$</span> <span class="cmd">npx ralpharium init</span></div>
+          <div class="line muted">  ↳ created <span class="hl">PROMPT.md</span>, <span class="hl">AGENTS.md</span>, <span class="hl">IMPLEMENTATION_PLAN.md</span>, <span class="hl">specs/</span>, <span class="hl">.ralph/</span></div>
+          <div class="line">&nbsp;</div>
+          <div class="line muted"># 2. boot the daemon — opens browser at localhost:3000</div>
+          <div class="line"><span class="prompt">$</span> <span class="cmd">npx ralpharium start</span></div>
+          <div class="line muted">  ↳ daemon up · websocket open · http://localhost:3000</div>
+          <div class="line">&nbsp;</div>
+          <div class="line muted"># 3. (optional) other entry points</div>
+          <div class="line"><span class="prompt">$</span> <span class="cmd">npx ralpharium dashboard</span></div>
+          <div class="line"><span class="prompt">$</span> <span class="cmd">npx ralpharium ram</span></div>
+          <div class="line"><span class="prompt">$</span> <span class="cmd">npx ralpharium start --port=4000</span></div>
+          <div class="line"><span class="cursor">▋</span></div>
+        </div>
+        <div class="terminal-foot">
+          <span><code>npm install -g ralpharium</code> for global install</span>
+          <span class="terminal-tag">requires Node 18+ or Python 3.11+</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PIPELINE ─────────────────────────────────────────────────── -->
+  <section class="section wrap-wide" id="iterations">
+    <div class="section-head reveal">
+      <span class="pill pill-acc"><span class="dot"></span>Per iteration</span>
+      <h2>Every run leaves a trail.</h2>
+      <p>Eight things get captured every time the AI runs: the prompt it read, the plan tasks it touched, what it ran, what it changed, what passed or failed, and what it committed. You can replay any of them.</p>
+    </div>
+
+    <div class="pipeline reveal">
+      <div class="pipe-cell phase-1"><span class="num">01</span><span class="label">Prompt</span><span class="role">PROMPT.md re-read</span><span class="phase">input</span></div>
+      <div class="pipe-cell phase-1"><span class="num">02</span><span class="label">Plan</span><span class="role">tasks parsed</span><span class="phase">state</span></div>
+      <div class="pipe-cell phase-2"><span class="num">03</span><span class="label">Spec match</span><span class="role">specs/* mapped</span><span class="phase">scope</span></div>
+      <div class="pipe-cell phase-2"><span class="num">04</span><span class="label">Run</span><span class="role">runner subprocess</span><span class="phase">execute</span></div>
+      <div class="pipe-cell phase-2"><span class="num">05</span><span class="label">Validate</span><span class="role">tests · lint · build</span><span class="phase">backpressure</span></div>
+      <div class="pipe-cell phase-2"><span class="num">06</span><span class="label">Commit</span><span class="role">atomic git commit</span><span class="phase">record</span></div>
+      <div class="pipe-cell phase-3"><span class="num">07</span><span class="label">Replay</span><span class="role">drill into output</span><span class="phase">audit</span></div>
+      <div class="pipe-cell phase-3"><span class="num">08</span><span class="label">Guardrail</span><span class="role">rules suggested</span><span class="phase">harden</span></div>
+    </div>
+  </section>
+
+  <!-- ── ARTIFACTS GRID ─────────────────────────────────────────── -->
+  <section class="section wrap" id="files">
+    <div class="section-head reveal">
+      <span class="pill pill-sky"><span class="dot" style="background:var(--sky)"></span>Files the AI reads</span>
+      <h2>A few markdown files, parsed for you.</h2>
+      <p>The AI reads a small set of files in your repo each iteration — Ralpharium reads them too, so you always know what the AI is working from.</p>
+    </div>
+
+    <div class="cards-grid reveal">
+      <div class="card p1"><div class="card-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></div><h3>PROMPT.md</h3><p class="role">per-iteration instruction</p><p>Re-read at the start of every iteration. Studio shows file presence, last-modified, and the active prompt mode.</p><div class="card-foot"><span>artifact</span><span>required</span></div></div>
+      <div class="card p1"><div class="card-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/><path d="M9 8h.01M15 8h.01"/></svg></div><h3>AGENTS.md</h3><p class="role">operational rules</p><p>Build/test commands, scope limits, commit hygiene. Studio surfaces it and proposes new rules from failure history.</p><div class="card-foot"><span>artifact</span><span>recommended</span></div></div>
+      <div class="card p2"><div class="card-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg></div><h3>IMPLEMENTATION_PLAN.md</h3><p class="role">persistent state</p><p>Parsed into tasks: completed, pending, blocked, stale. Drift and repeated-work warnings raised automatically.</p><div class="card-foot"><span>artifact</span><span>parsed</span></div></div>
+      <div class="card p2"><div class="card-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M9 7h7M9 11h5"/></svg></div><h3>specs/*.md</h3><p class="role">source of truth</p><p>Each spec is mapped against plan tasks and recent commits — covered, partial, drifting, or ignored.</p><div class="card-foot"><span>artifact</span><span>coverage</span></div></div>
+      <div class="card p2"><div class="card-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg></div><h3>Iteration log</h3><p class="role">append-only history</p><p>Every iteration's mode, status, files changed, commit SHA, validation result, and command output — replayable.</p><div class="card-foot"><span>history</span><span>JSONL</span></div></div>
+      <div class="card p2"><div class="card-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></div><h3>Backpressure</h3><p class="role">validation gate</p><p>Auto-detects <code>npm test</code>, <code>lint</code>, <code>typecheck</code>, <code>build</code>, plus working-tree status. One click to run.</p><div class="card-foot"><span>checks</span><span>auto-detected</span></div></div>
+      <div class="card p3"><div class="card-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M2 12h6M16 12h6"/></svg></div><h3>Commits</h3><p class="role">atomic record</p><p>Recent commits surfaced inline. Iterations link to the SHA they produced — or flag if no commit was created.</p><div class="card-foot"><span>git</span><span>per iteration</span></div></div>
+      <div class="card p3"><div class="card-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div><h3>Guardrails</h3><p class="role">learned rules</p><p>Repeat-failure heuristics turn into AGENTS.md suggestions. "Tests failed 3×, require <code>npm test</code>."</p><div class="card-foot"><span>suggestions</span><span>history-driven</span></div></div>
+    </div>
+  </section>
+
+  <!-- ── EDITORIAL SPLIT — ITERATION ANATOMY ───────────────────── -->
+  <section class="section wrap" id="replay">
+    <div class="split">
+      <div class="split-art reveal">
+        <div class="hex-preview" style="border:0;background:transparent;">
+          <div class="hex-preview-head" style="border-bottom:1px solid var(--line);">
+            <span><span class="dot" style="background:var(--cyan)"></span>&nbsp; iteration anatomy</span>
+            <span class="pill pill-cyan">JSONL</span>
+          </div>
+        </div>
+        <div class="memlay" style="margin-top:1rem">
+          <div class="h">field</div><div class="h">type</div><div class="h">role</div>
+          <div class="v-acc">id · number</div>     <div>str · int</div>     <div>unique handle, monotonic counter</div>
+          <div>mode</div>                          <div>plan / build</div>  <div>which prompt was used</div>
+          <div class="v-cyan">status</div>         <div>enum</div>          <div>running · passed · failed · stopped</div>
+          <div>files_changed</div>                 <div>list[str]</div>     <div>derived from commit</div>
+          <div class="v-acc">commit_sha</div>      <div>str?</div>          <div>linked to git history</div>
+          <div>validation</div>                    <div>list[check]</div>   <div>tests/lint/typecheck results</div>
+          <div>command_output</div>                <div>str (tail)</div>    <div>last 4KB of runner stdout</div>
+          <div class="v-cyan">failure_reason</div> <div>str?</div>          <div>only on failure</div>
+        </div>
+      </div>
+
+      <div class="split-copy reveal">
+        <span class="pill pill-acc"><span class="dot"></span>Iteration anatomy</span>
+        <h2 style="margin-top:.85rem">Every loop pass is <span class="serif">replayable.</span></h2>
+        <p style="margin-top:1rem">When Ralph finishes — or fails — Studio writes a structured record to <code>.ralph/iterations.jsonl</code>. Click any row in the timeline to see the prompt used, the plan diff, the validation output, and the resulting commit.</p>
+
+        <ul class="feature-list">
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+            <div><strong>Append-only.</strong><p>Local JSONL. Easy to <code>tail -f</code>, easy to ship to wherever later.</p></div>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            <div><strong>External hooks.</strong><p><code>POST /api/iterations</code> from any CLI to start an iteration; <code>PATCH</code> when it finishes.</p></div>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2"/></svg>
+            <div><strong>Convergence signals.</strong><p>Failure clustering, dirty trees, missing commits — surfaced as guardrail suggestions.</p></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FEATURE GRID ───────────────────────────────────────────── -->
+  <section class="section wrap" id="dashboard-preview">
+    <div class="section-head reveal">
+      <span class="pill pill-pink"><span class="dot"></span>Dashboard</span>
+      <h2>What the dashboard does.</h2>
+      <p>Six clearly-labelled cards: loop status, iteration timeline, plan health, validation, spec coverage, and a live runtime panel. Click anything for full detail.</p>
+    </div>
+
+    <div class="cards-grid three reveal">
+      <div class="card"><div class="card-mark acc">▦</div><h3>Loop status header</h3><p>Mode, iteration, runner, branch, dirty tree — and one-click start, pause, stop, panic.</p><div class="card-foot"><span>controls</span><span>WebSocket</span></div></div>
+      <div class="card"><div class="card-mark cyan">⏱</div><h3>Iteration timeline</h3><p>Recent passes with mode, status, duration, files changed, commit SHA. Click to replay.</p><div class="card-foot"><span>history</span><span>local</span></div></div>
+      <div class="card"><div class="card-mark purple">✓</div><h3>Plan health</h3><p>Tasks parsed from <code>IMPLEMENTATION_PLAN.md</code>. Next, blocked, stale. Drift warnings.</p><div class="card-foot"><span>parser</span><span>regex</span></div></div>
+      <div class="card"><div class="card-mark acc">⚡</div><h3>Backpressure</h3><p>Auto-detected validation. Tests, lint, typecheck, build, git clean. Run any of them on demand.</p><div class="card-foot"><span>subprocess</span><span>1-click</span></div></div>
+      <div class="card"><div class="card-mark cyan">⊡</div><h3>Spec coverage map</h3><p>Each spec is covered, partial, drifting, or ignored — derived from plan + commits.</p><div class="card-foot"><span>heuristic</span><span>per file</span></div></div>
+      <div class="card"><div class="card-mark purple">⚐</div><h3>Guardrails</h3><p>Surfaces PROMPT.md and AGENTS.md, plus rules learned from repeat failures.</p><div class="card-foot"><span>suggestions</span><span>history-driven</span></div></div>
+    </div>
+  </section>
+
+  <!-- ── ROADMAP ─────────────────────────────────────────────────── -->
+  <section class="section wrap" id="roadmap">
+    <div class="section-head reveal">
+      <span class="pill pill-yellow"><span class="dot dot-pulse"></span>Roadmap</span>
+      <h2>What's shipping next.</h2>
+      <p>Built in the open. Every milestone is real work — no vapor, no "trust me bro." If a phase says shipped, it's already on your machine when you install. If it says next, the spec is written and the wiring is half-done.</p>
+    </div>
+
+    <div class="roadmap reveal">
+      <!-- Phase 0 -->
+      <article class="roadmap-phase status-shipped">
+        <header class="roadmap-h">
+          <span class="roadmap-num">0</span>
+          <div>
+            <h3>Foundations</h3>
+            <span class="roadmap-status">Shipped</span>
+          </div>
+        </header>
+        <ul class="roadmap-items">
+          <li><span class="roadmap-tick">✓</span>Local FastAPI daemon + WebSocket dashboard</li>
+          <li><span class="roadmap-tick">✓</span>Iteration JSONL store at <code>.ralph/iterations.jsonl</code></li>
+          <li><span class="roadmap-tick">✓</span>Plan parser, spec coverage, validation backpressure</li>
+          <li><span class="roadmap-tick">✓</span>RAM page: blackboard, event stream, scratchpad, checkpoints</li>
+        </ul>
+      </article>
+
+      <!-- Phase 1 -->
+      <article class="roadmap-phase status-shipped">
+        <header class="roadmap-h">
+          <span class="roadmap-num">1</span>
+          <div>
+            <h3>8 agents, made observable</h3>
+            <span class="roadmap-status">Shipped</span>
+          </div>
+        </header>
+        <ul class="roadmap-items">
+          <li><span class="roadmap-tick">✓</span><code>AgentRoster</code> with 8 fixed roles wired into the iteration lifecycle</li>
+          <li><span class="roadmap-tick">✓</span>8-card grid with click-through prompt + decision history</li>
+          <li><span class="roadmap-tick">✓</span>Thrash detector — "Ralph keeps Ralphing the wrong thing"</li>
+          <li><span class="roadmap-tick">✓</span>Live broadcast on every agent transition + localStorage cache</li>
+        </ul>
+      </article>
+
+      <!-- Phase 2 - In progress -->
+      <article class="roadmap-phase status-next">
+        <header class="roadmap-h">
+          <span class="roadmap-num">2</span>
+          <div>
+            <h3>Real autonomy</h3>
+            <span class="roadmap-status">Next · in progress</span>
+          </div>
+        </header>
+        <ul class="roadmap-items">
+          <li><span class="roadmap-tick">→</span><strong>Cost telemetry per iteration.</strong> Parse runner stdout for tokens, surface <code>$/iteration</code>, <code>$/session</code>, <code>$/spec_completed</code>.</li>
+          <li><span class="roadmap-tick">→</span><strong>Git-worktree-per-iteration sandbox.</strong> No edits land on main until validation passes. Auto-rollback on failure.</li>
+          <li><span class="roadmap-tick">→</span><strong>Bidirectional question channel.</strong> Agent writes a question, loop pauses, you reply, loop resumes — without losing context.</li>
+          <li><span class="roadmap-tick">→</span><strong>Time + token budgets.</strong> Kill runaway iterations after N seconds or M tokens.</li>
+        </ul>
+      </article>
+
+      <!-- Phase 3 - Future -->
+      <article class="roadmap-phase status-future">
+        <header class="roadmap-h">
+          <span class="roadmap-num">3</span>
+          <div>
+            <h3>Multiplayer + resilience</h3>
+            <span class="roadmap-status">Soon</span>
+          </div>
+        </header>
+        <ul class="roadmap-items">
+          <li><span class="roadmap-tick">◇</span><strong>Daemon crash recovery.</strong> Replay <code>iterations.jsonl</code> on boot — pick up exactly where the loop died.</li>
+          <li><span class="roadmap-tick">◇</span><strong>Multi-client presence.</strong> Two devs watching the same loop see each other's cursors and selections.</li>
+          <li><span class="roadmap-tick">◇</span><strong>Replay on a different model.</strong> Re-run a past iteration on Sonnet vs Opus vs Haiku and diff the outputs.</li>
+          <li><span class="roadmap-tick">◇</span><strong>Real per-agent LLM calls.</strong> Phase 1 synthesizes agent activity from lifecycle events. Phase 3 = each of the 8 agents is a real LLM call with its own system prompt and history.</li>
+        </ul>
+      </article>
+
+      <!-- Phase 4 - North Star -->
+      <article class="roadmap-phase status-dream">
+        <header class="roadmap-h">
+          <span class="roadmap-num">∞</span>
+          <div>
+            <h3>North star</h3>
+            <span class="roadmap-status">The dream</span>
+          </div>
+        </header>
+        <ul class="roadmap-items">
+          <li><span class="roadmap-tick">★</span><strong>Self-spec'ing loops.</strong> The runner writes <code>specs/*.md</code> from a chat thread, then builds against them. Phase-1 of Wiggum, automated.</li>
+          <li><span class="roadmap-tick">★</span><strong>Multi-repo orchestration.</strong> One Ralpharium daemon coordinating loops across a monorepo's services or a fleet of microrepos.</li>
+          <li><span class="roadmap-tick">★</span><strong>Visual diff approval.</strong> Each commit lands on a feature branch; dashboard shows the diff with one-click approve/revert.</li>
+          <li><span class="roadmap-tick">★</span><strong>Public agent marketplace.</strong> Drop-in custom agents (security_reviewer, perf_auditor, accessibility_critic) you compose into your roster.</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="roadmap-foot reveal">
+      <strong>Want something on this list sooner?</strong> File an issue on <a href="https://github.com/ghuntley/how-to-ralph-wiggum" target="_blank" rel="noreferrer">GitHub</a> or open a PR. Local-first stays local — but the roadmap is open.
+    </div>
+  </section>
+
+  <!-- ── CTA ─────────────────────────────────────────────────────── -->
+  <section class="wrap" id="start">
+    <div class="cta reveal">
+      <span class="pill pill-yellow"><span class="dot dot-pulse"></span>Ready when you are</span>
+      <h2 style="margin-top:1rem">Run a loop. Watch what changes.</h2>
+      <p>Open the dashboard, pick a runner, click <strong>Start</strong>. If something fails, the loop stops. If it commits, you see the SHA. Everything stays on your machine.</p>
+      <div class="hero-actions">
+        <a href="/dashboard" class="btn btn-primary">Open the dashboard <span class="arrow">→</span></a>
+        <a href="/tech" class="btn btn-ghost">How it's built</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── FOOTER ──────────────────────────────────────────────────── -->
+<footer class="footer footer-min" role="contentinfo">
+  <div class="footer-min-inner">
+    <a class="brand" href="/" aria-label="Ralpharium home">
+      <span class="brand-mark"><img src="https://static.wixstatic.com/media/e2da02_253df55db309433a8658a03767c9da4c~mv2.png" alt="Ralpharium" width="36" height="36"></span>
+      <span class="brand-name">Ralpharium</span>
+    </a>
+    <span class="footer-watermark">Ralpharium 2026</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  // ── Reveal on scroll ──────────────────────────────────────────────
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("in"); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+  // ── Side-nav active-section highlight ────────────────────────────
+  const sideLinks = document.querySelectorAll(".side-nav a[data-target]");
+  const sideMap   = new Map();
+  sideLinks.forEach((a) => {
+    const id = a.dataset.target;
+    const sec = document.getElementById(id);
+    if (sec) sideMap.set(sec, a);
+  });
+  if (sideMap.size) {
+    const activate = (el) => {
+      sideLinks.forEach((a) => a.classList.remove("active"));
+      const a = sideMap.get(el);
+      if (a) a.classList.add("active");
+    };
+    const sectionIO = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible) activate(visible.target);
+    }, { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] });
+    sideMap.forEach((_a, sec) => sectionIO.observe(sec));
+  }
+
+  // ── Footer clock ─────────────────────────────────────────────────
+  const foot = document.getElementById("footTime");
+  const tick = () => {
+    if (!foot) return;
+    const d = new Date();
+    foot.textContent = d.toTimeString().slice(0, 8) + "  |  " + d.toDateString();
+  };
+  tick(); setInterval(tick, 1000);
+
+  // ── CA pill click-to-copy ────────────────────────────────────────
+  const caPill = document.getElementById("caPill");
+  if (caPill) {
+    caPill.addEventListener("click", () => {
+      const ca = caPill.dataset.ca || "";
+      const copyEl = document.getElementById("caCopy");
+      const orig = copyEl ? copyEl.textContent : "";
+      navigator.clipboard?.writeText(ca).then(() => {
+        if (copyEl) {
+          copyEl.textContent = "copied";
+          caPill.classList.add("is-copied");
+          setTimeout(() => {
+            copyEl.textContent = orig;
+            caPill.classList.remove("is-copied");
+          }, 1400);
+        }
+      }).catch(() => { if (copyEl) copyEl.textContent = "press ⌘C"; });
+    });
+  }
+
+  // ── Terminal copy button ─────────────────────────────────────────
+  document.querySelectorAll(".terminal-copy").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const text = btn.dataset.copy || "";
+      const orig = btn.textContent;
+      navigator.clipboard?.writeText(text).then(() => {
+        btn.textContent = "copied";
+        setTimeout(() => (btn.textContent = orig), 1400);
+      }).catch(() => { btn.textContent = "press ⌘C"; });
+    });
+  });
+
+  // ── Live ops snapshot — real backend data ────────────────────────
+  const heroSnap   = document.getElementById("heroSnapshot");
+  const heroAgo    = document.getElementById("heroAgo");
+  const heroBranch = document.getElementById("heroBranch");
+  const heroPill   = document.getElementById("heroStatePill");
+  const metaIters  = document.getElementById("metaIters");
+  const metaTasks  = document.getElementById("metaTasks");
+  const metaSpecs  = document.getElementById("metaSpecs");
+  const metaRun    = document.getElementById("metaRuntime");
+
+  const placeholderSnap = [
+    "  status      idle · run `python backend/main.py` to connect",
+    "  branch      —",
+    "  runner      claude · no command configured",
+    "  iterations  0",
+    "  plan        IMPLEMENTATION_PLAN.md not yet parsed",
+    "  validation  no checks detected",
+  ].join("\n");
+  if (heroSnap) heroSnap.textContent = placeholderSnap;
+
+  let lastUpdate = Date.now();
+  const tickAgo = () => {
+    if (!heroAgo) return;
+    const sec = Math.floor((Date.now() - lastUpdate) / 1000);
+    heroAgo.textContent = sec < 1 ? "just now" : `${sec}s ago`;
+  };
+  setInterval(tickAgo, 500);
+
+  const fmtBytes = (n) => {
+    if (n == null || Number.isNaN(n)) return "—";
+    if (n < 1024) return `${n} B`;
+    if (n < 1048576) return `${(n / 1024).toFixed(1)} KB`;
+    if (n < 1073741824) return `${(n / 1048576).toFixed(1)} MB`;
+    return `${(n / 1073741824).toFixed(2)} GB`;
+  };
+
+  const renderRamMonitor = (state) => {
+    const s     = state.status         || {};
+    const ram   = state.ram            || {};
+    const seg   = ram.shared_segment   || {};
+    const stats = ram.event_stats      || {};
+    const proc  = ram.process          || {};
+    const press = ram.memory_pressure  || {};
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+
+    set("crtSeg",    `seg ${(seg.name || "—").slice(0, 22)}`);
+    set("crtBytes",  `used ${fmtBytes(seg.used_bytes)} / ${fmtBytes(seg.size)}`);
+    set("crtEvents", `events ${(stats.count ?? 0)}/${(stats.capacity ?? 0)}`);
+    set("crtProc",   proc.running
+      ? `proc pid ${proc.pid}${proc.memory?.rss_bytes != null ? " rss " + fmtBytes(proc.memory.rss_bytes) : ""}`
+      : `proc no runner`);
+    set("crtCtx",    `ctx ${fmtBytes(press.prompt_context_bytes)} · ~${(press.estimated_context_tokens ?? 0)} tok`);
+    set("crtMode",   `mode ${s.mode || "idle"}`);
+  };
+
+  const renderSnapshot = (state) => {
+    if (!heroSnap || !state) return;
+    renderRamMonitor(state);
+    const s     = state.status || {};
+    const repo  = state.repo   || {};
+    const plan  = state.plan   || {};
+    const specs = state.specs  || {};
+    const bp    = state.backpressure || {};
+
+    const lines = [
+      `  status      ${(s.mode || "idle").padEnd(10)}  ${s.runner || "—"}`,
+      `  branch      ${repo.branch || "—"}${repo.dirty ? "  (dirty)" : ""}`,
+      `  iterations  ${s.iteration_count ?? 0}`,
+      `  plan        ${plan.exists ? `${plan.tasks_completed}/${plan.tasks_total} tasks` : "no IMPLEMENTATION_PLAN.md"}`,
+      `  next task   ${plan.next_task ? plan.next_task.text.slice(0, 56) : "—"}`,
+      `  specs       ${(specs.specs || []).length} files · ${(specs.totals?.covered ?? 0)} covered`,
+      `  validation  ${bp.all_clean ? "all clean" : `${(bp.checks || []).length} checks detected`}`,
+    ];
+    heroSnap.textContent = lines.join("\n");
+
+    if (heroBranch) heroBranch.textContent = repo.branch ? `${(repo.branch || "").slice(0, 24)}` : "repo";
+    if (heroPill)   heroPill.textContent   = (s.mode || "idle");
+    if (metaIters)  metaIters.textContent  = String(s.iteration_count ?? 0);
+    if (metaTasks)  metaTasks.textContent  = plan.exists ? `${plan.tasks_completed} / ${plan.tasks_total}` : "— / —";
+    if (metaSpecs)  metaSpecs.textContent  = String((specs.specs || []).length);
+    if (metaRun)    metaRun.textContent    = "online";
+    lastUpdate = Date.now();
+
+    // Light up topology based on what files exist
+    const map = {
+      prompt:  repo.files?.prompt?.exists,
+      plan:    repo.files?.plan?.exists,
+      agents:  repo.files?.agents?.exists,
+      specs:   repo.files?.specs?.exists,
+      tests:   (bp.checks || []).some((c) => c.id === "tests" || c.id === "py-tests"),
+      lint:    (bp.checks || []).some((c) => c.id === "lint"),
+      commits: (repo.commits || []).length > 0,
+      guards:  repo.files?.agents?.exists,
+    };
+    document.querySelectorAll("#topoNodes [data-node]").forEach((g) => {
+      const on = !!map[g.dataset.node];
+      g.querySelector(".node-bg").classList.toggle("on", on);
+      g.querySelector(".node-label").classList.toggle("on", on);
+    });
+  };
+
+  // Bootstrap from REST, then keep fresh via WebSocket
+  fetch("/api/state")
+    .then((r) => r.ok ? r.json() : null)
+    .then((data) => { if (data) renderSnapshot(data); })
+    .catch(() => {});
+
+  let ws = null;
+  let reconnect;
+  const connect = () => {
+    try {
+      const proto = location.protocol === "https:" ? "wss:" : "ws:";
+      ws = new WebSocket(`${proto}//${location.host}/ws`);
+      ws.onopen = () => { if (heroPill) heroPill.textContent = "connected"; };
+      ws.onmessage = (ev) => {
+        try {
+          const msg = JSON.parse(ev.data);
+          if (msg.type === "snapshot" && msg.data) renderSnapshot(msg.data);
+          if (msg.type === "status"   && msg.data) {
+            // refetch aggregate to refresh plan/bp/specs derived metrics too
+            fetch("/api/state").then((r) => r.ok ? r.json() : null).then((d) => d && renderSnapshot(d)).catch(() => {});
+          }
+        } catch {}
+      };
+      ws.onclose = () => {
+        if (metaRun) metaRun.textContent = "offline";
+        clearTimeout(reconnect); reconnect = setTimeout(connect, 2200);
+      };
+      ws.onerror = () => { try { ws.close(); } catch {} };
+    } catch {
+      if (metaRun) metaRun.textContent = "offline";
+      clearTimeout(reconnect); reconnect = setTimeout(connect, 2200);
+    }
+  };
+  connect();
+})();
+</script>
+</body>
+</html>

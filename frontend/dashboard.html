@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ralpharium</title>
+<meta name="description" content="Local control plane for the Ralph Loop.">
+<link rel="stylesheet" href="style.css?v=ralpharium-nav-cream-1">
+<link rel="icon" type="image/png" href="https://static.wixstatic.com/media/e2da02_cdd3da8015f749ef94948fe714c530bb~mv2.png">
+<link rel="apple-touch-icon" href="https://static.wixstatic.com/media/e2da02_cdd3da8015f749ef94948fe714c530bb~mv2.png">
+</head>
+<body class="dash-page">
+
+<!-- Springfield mini-sky: drifting cartoon clouds at the top of the page. -->
+<div class="mini-sky" aria-hidden="true">
+  <svg width="0" height="0" style="position:absolute"><defs>
+    <radialGradient id="ds-lobe" cx="38%" cy="30%" r="78%">
+      <stop offset="0%"   stop-color="#FFFFFF"/>
+      <stop offset="55%"  stop-color="#FAFDFF"/>
+      <stop offset="100%" stop-color="#A6CFE6"/>
+    </radialGradient>
+    <symbol id="ds-cloud" viewBox="0 0 340 170" overflow="visible">
+      <g fill="url(#ds-lobe)">
+        <circle cx="62"  cy="126" r="34"/>
+        <circle cx="128" cy="134" r="32"/>
+        <circle cx="194" cy="130" r="36"/>
+        <circle cx="258" cy="124" r="32"/>
+        <circle cx="42"  cy="96"  r="40"/>
+        <circle cx="98"  cy="84"  r="48"/>
+        <circle cx="170" cy="76"  r="54"/>
+        <circle cx="234" cy="86"  r="46"/>
+        <circle cx="294" cy="104" r="38"/>
+        <circle cx="80"  cy="48"  r="32"/>
+        <circle cx="150" cy="40"  r="38"/>
+        <circle cx="216" cy="48"  r="34"/>
+      </g>
+    </symbol>
+  </defs></svg>
+  <svg class="cloud m1"><use href="#ds-cloud"/></svg>
+  <svg class="cloud m2"><use href="#ds-cloud"/></svg>
+  <svg class="cloud m3"><use href="#ds-cloud"/></svg>
+  <svg class="cloud m4"><use href="#ds-cloud"/></svg>
+  <svg class="cloud m5"><use href="#ds-cloud"/></svg>
+  <svg class="cloud m6"><use href="#ds-cloud"/></svg>
+  <svg class="cloud m7"><use href="#ds-cloud"/></svg>
+  <svg class="cloud m8"><use href="#ds-cloud"/></svg>
+</div>
+
+<!-- ── PUBLIC NAV (same on /, /dashboard, /ram, /tech) ───────────── -->
+<nav class="nav">
+  <a class="brand" href="/">
+    <span class="brand-mark"><img src="https://static.wixstatic.com/media/e2da02_253df55db309433a8658a03767c9da4c~mv2.png" alt="Ralpharium" width="36" height="36"></span>
+    <span class="brand-name">Ralpharium</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/dashboard" class="active">Dashboard</a></li>
+    <li><a href="/ram">RAM</a></li>
+    <li><a href="/tech">Architecture</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="https://flaunch.gg" target="_blank" rel="noreferrer" class="btn-pop btn-pop-icon btn-pop-flaunch" aria-label="Flaunch" title="Flaunch">
+      <img src="/img/flaunch-logo.svg" alt="Flaunch" width="22" height="22" class="btn-pop-img">
+    </a>
+    <a href="https://x.com/Ralphaxyz" target="_blank" rel="noreferrer" class="btn-pop btn-pop-icon btn-pop-x" aria-label="X / Twitter — @Ralphaxyz" title="X / Twitter — @Ralphaxyz">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2H21l-6.51 7.43L22 22h-6.828l-4.79-6.27L4.8 22H2.04l6.96-7.95L2 2h6.914l4.34 5.74L18.244 2zm-1.196 18h1.86L7.06 4H5.07l11.978 16z"/></svg>
+    </a>
+    <a href="https://github.com/ghuntley/how-to-ralph-wiggum" target="_blank" rel="noreferrer" class="btn-pop btn-pop-icon btn-pop-gh" aria-label="GitHub" title="GitHub">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55 0-.27-.01-.99-.02-1.94-3.2.7-3.87-1.54-3.87-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.25 3.34.95.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18.91-.25 1.89-.38 2.86-.38s1.95.13 2.86.38c2.18-1.49 3.14-1.18 3.14-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.7 5.41-5.27 5.69.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .31.21.66.79.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5Z"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- ── BODY ───────────────────────────────────────────────────────── -->
+<main class="dash">
+  <!-- Preview banner — shown to public visitors with no local daemon data -->
+  <div class="preview-banner" id="previewBanner" hidden>
+    <div class="preview-banner-mark" aria-hidden="true">👋</div>
+    <div class="preview-banner-copy">
+      <strong>You're previewing Ralpharium.</strong>
+      <p>This dashboard is a local-first tool — it shows real data only when the daemon is running on <em>your</em> machine against <em>your</em> repo. Install locally to see iterations, agents, validation, and the live blackboard fill in.</p>
+      <code class="preview-banner-cmd">npx ralpharium init &amp;&amp; npx ralpharium start</code>
+    </div>
+    <button class="btn btn-xs btn-ghost preview-banner-x" id="previewBannerClose" aria-label="Dismiss">✕</button>
+  </div>
+
+  <!-- ── 1. Loop status card ─────────────────────────────────────── -->
+  <section class="loop-card">
+    <div class="loop-card-l">
+      <header class="loop-head">
+        <div class="dash-mode mode-idle" id="modePill">
+          <span class="dot"></span>
+          <span id="modeText">idle</span>
+        </div>
+        <div class="loop-head-meta">
+          <span class="dash-meta-item"><span class="k">iter</span><span class="v acc" id="hIter">0</span></span>
+          <span class="dash-meta-item"><span class="k">session</span><span class="v" id="hSessionIter">0</span></span>
+          <span class="dash-meta-item"><span class="k">runner</span><span class="v" id="hRunner">claude</span></span>
+          <span class="dash-meta-item"><span class="k">branch</span><span class="v cyan" id="hBranch">—</span></span>
+          <span class="dash-meta-item" id="hDirtyWrap"><span class="k">tree</span><span class="v" id="hDirty">clean</span></span>
+          <span class="dash-meta-item"><span class="k">uptime</span><span class="v faint" id="hUptime">00:00:00</span></span>
+          <span class="dash-meta-item"><span class="k">socket</span><span class="v faint" id="hSocket">connecting</span></span>
+        </div>
+      </header>
+
+      <div class="loop-mode" id="loopMode">idle</div>
+      <p class="loop-sub" id="loopSub">No loop running. <kbd class="kbd">Start loop</kbd> = continuous mode (until stop conditions hit). <kbd class="kbd">Run once</kbd> = single iteration. Pick a runner and (optionally) a command in <strong>Loop configuration</strong> below — empty command auto-uses a safe fallback so you can test instantly.</p>
+
+      <div class="loop-runner-row">
+        <span class="pill" id="runnerPill"><span class="dot"></span><span id="runnerName">claude</span></span>
+        <span class="pill pill-cyan" id="cmdPill" hidden></span>
+        <span class="pill" id="repoPill"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 7h6l2 2h10v10H3z"/></svg> <span id="repoPath">—</span></span>
+        <span class="pill pill-amber" id="stopReasonPill" hidden></span>
+        <span class="pill" id="etaPill" hidden></span>
+      </div>
+
+      <div class="loop-controls">
+        <button class="btn btn-sm btn-primary" id="btnStart">Start loop</button>
+        <button class="btn btn-sm btn-ghost"   id="btnRunOnce">Run once</button>
+        <button class="btn btn-sm btn-warn"    id="btnPause" hidden>Pause</button>
+        <button class="btn btn-sm btn-ghost"   id="btnResume" hidden>Resume</button>
+        <button class="btn btn-sm btn-ghost"   id="btnStop" hidden>Stop</button>
+        <button class="btn btn-sm btn-danger"  id="btnPanic" hidden>Panic</button>
+        <span class="kbd-hint"><span class="kbd">Space</span> pause</span>
+      </div>
+    </div>
+
+    <div class="loop-card-r">
+      <div class="kpi"><span class="kpi-k">Iterations</span><span class="kpi-v" id="kIter">0</span></div>
+      <div class="kpi"><span class="kpi-k">Plan tasks</span><span class="kpi-v" id="kPlan">— / —</span></div>
+      <div class="kpi"><span class="kpi-k">Specs</span><span class="kpi-v" id="kSpecs">0</span></div>
+      <div class="kpi"><span class="kpi-k">Backpressure</span><span class="kpi-v" id="kBp">—</span></div>
+    </div>
+  </section>
+
+  <!-- ── How to use this dashboard (secondary, collapsible) ───── -->
+  <section class="dash-howto panel-card">
+    <header class="pc-head">
+      <div>
+        <div class="pc-title"><span class="dot" style="background:var(--yellow,#FFD90F)"></span>How to use</div>
+        <div class="pc-sub">A 4-step workflow. Each card below maps to one of these steps.</div>
+      </div>
+      <div class="pc-actions">
+        <button class="btn btn-xs btn-ghost" id="dashHowtoToggle" aria-expanded="true">Hide</button>
+      </div>
+    </header>
+    <div class="pc-body" id="dashHowtoBody">
+      <ol class="dash-howto-steps">
+        <li>
+          <span class="dash-howto-num">1</span>
+          <div>
+            <h4>Point at a repo</h4>
+            <p>In <strong>Loop configuration</strong> below, paste the absolute path to the repo you want Ralpharium to watch (or leave the current one). It reads <code>PROMPT.md</code>, <code>AGENTS.md</code>, <code>IMPLEMENTATION_PLAN.md</code>, and <code>specs/*.md</code> from there.</p>
+          </div>
+        </li>
+        <li>
+          <span class="dash-howto-num">2</span>
+          <div>
+            <h4>Pick a runner</h4>
+            <p>Choose Claude / Codex / Aider / custom and (optionally) override the shell command. Empty command = a safe fallback iteration runs (so you can test without setting anything up).</p>
+          </div>
+        </li>
+        <li>
+          <span class="dash-howto-num">3</span>
+          <div>
+            <h4>Run it</h4>
+            <p><strong>Run once</strong> = a single iteration to test the wiring. <strong>Start loop</strong> = continuous until <code>max_iterations</code>, a failure (with stop-on-failure), or you click Stop / Panic.</p>
+          </div>
+        </li>
+        <li>
+          <span class="dash-howto-num">4</span>
+          <div>
+            <h4>Watch what changed</h4>
+            <p>The <strong>Iteration timeline</strong> shows every pass with status, files changed, commit SHA. <strong>Plan health</strong>, <strong>Backpressure</strong>, and <strong>Spec coverage</strong> update each iteration. For live runner output and per-agent activity, open <a href="/ram">/ram</a>.</p>
+          </div>
+        </li>
+      </ol>
+      <div class="dash-howto-foot">
+        <strong>Safety:</strong> turn on <code>stop_on_failure</code>, <code>stop_if_no_commit</code>, and <code>stop_if_dirty_before_run</code> for your first real run. Press <kbd>Space</kbd> to pause between iterations, <kbd>Ctrl/⌘+P</kbd> for panic stop.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 1b. Loop configuration card ──────────────────────────── -->
+  <section class="config-card panel-card">
+    <header class="pc-head">
+      <div class="pc-title"><span class="dot" style="background:var(--cyan)"></span>Loop configuration</div>
+      <div class="pc-actions">
+        <span class="muted-meta" id="cfgMeta">—</span>
+        <button class="btn btn-xs btn-ghost" id="cfgSave" hidden>Save</button>
+      </div>
+    </header>
+    <div class="pc-body">
+      <form id="cfgForm" class="cfg-grid" onsubmit="return false">
+        <div class="cfg-field cfg-field-wide">
+          <span class="cfg-k">Repository path</span>
+          <div class="cfg-cmd-row">
+            <input id="cfgRepoPath" class="cfg-input" type="text" placeholder="/absolute/path/to/your/repo" autocomplete="off" spellcheck="false">
+            <button type="button" class="btn btn-xs btn-primary" id="cfgRepoApply" title="Switch to this repo (requires loop stopped)">Apply</button>
+          </div>
+          <span class="cfg-hint" id="cfgRepoHint">Folder Ralpharium watches for PROMPT.md, AGENTS.md, IMPLEMENTATION_PLAN.md, specs/, package.json. Stop the loop before switching.</span>
+        </div>
+        <label class="cfg-field">
+          <span class="cfg-k">Runner</span>
+          <select id="cfgRunner" class="cfg-input">
+            <option value="codex">codex</option>
+            <option value="claude" selected>claude</option>
+            <option value="aider">aider</option>
+            <option value="openrouter">openrouter (via aider)</option>
+            <option value="custom">custom</option>
+          </select>
+          <span class="cfg-hint" id="cfgRunnerHint">—</span>
+        </label>
+        <div class="cfg-field cfg-field-wide">
+          <span class="cfg-k">Runner command</span>
+          <div class="cfg-cmd-row">
+            <input id="cfgRunnerCmd" class="cfg-input" type="text" placeholder='e.g. claude -p "$(cat PROMPT.md)"' autocomplete="off">
+            <button type="button" class="btn btn-xs btn-ghost" id="cfgCmdCopy" title="Copy current command">Copy</button>
+          </div>
+          <div class="cfg-cmd-actions">
+            <button type="button" class="btn btn-xs btn-ghost" id="cfgCmdUsePreset" title="Fill with the selected runner's default command">Use preset command</button>
+          </div>
+          <span class="cfg-hint">Shell command run each iteration. Empty = manual mode. Save changes to apply.</span>
+        </div>
+        <label class="cfg-field">
+          <span class="cfg-k">Max iterations</span>
+          <input id="cfgMax" class="cfg-input" type="number" min="0" placeholder="unlimited">
+          <span class="cfg-hint">0 / blank = unlimited.</span>
+        </label>
+        <label class="cfg-field">
+          <span class="cfg-k">Delay between (s)</span>
+          <input id="cfgDelay" class="cfg-input" type="number" min="0" step="0.5" value="2">
+          <span class="cfg-hint">Wait between iterations.</span>
+        </label>
+        <label class="cfg-field">
+          <span class="cfg-k">Mode</span>
+          <select id="cfgMode" class="cfg-input">
+            <option value="build" selected>build</option>
+            <option value="plan">plan</option>
+          </select>
+          <span class="cfg-hint">Iteration prompt mode.</span>
+        </label>
+        <label class="cfg-field cfg-field-toggle">
+          <input id="cfgFail" class="cfg-check" type="checkbox" checked>
+          <span class="cfg-k">Stop on failure</span>
+        </label>
+        <label class="cfg-field cfg-field-toggle">
+          <input id="cfgNoCommit" class="cfg-check" type="checkbox">
+          <span class="cfg-k">Stop if no commit</span>
+        </label>
+        <label class="cfg-field cfg-field-toggle">
+          <input id="cfgDirty" class="cfg-check" type="checkbox">
+          <span class="cfg-k">Stop if tree dirty before run</span>
+        </label>
+      </form>
+    </div>
+  </section>
+
+  <!-- ── 1c. Safety guide (collapsible) ────────────────────────── -->
+  <section class="safety-card panel-card">
+    <header class="pc-head">
+      <div class="pc-title"><span class="dot" style="background:var(--amber)"></span>Before running on a real repo</div>
+      <div class="pc-actions">
+        <button class="btn btn-xs btn-ghost" id="safetyToggle" aria-expanded="true">Hide</button>
+      </div>
+    </header>
+    <div class="pc-body" id="safetyBody">
+      <ul class="safety-list">
+        <li><strong>Commit or stash your own changes first.</strong> A dirty tree is a footgun for any iteration runner.</li>
+        <li><strong>Start with <code>max_iterations = 1</code>.</strong> Validate one full pass before letting it loop.</li>
+        <li><strong>Use a throwaway repo for the first real run.</strong> Don't hand a brand-new prompt to a production codebase.</li>
+        <li><strong>Enable <code>stop_on_failure</code>.</strong> The first failure usually surfaces a misunderstanding worth fixing in <code>PROMPT.md</code>.</li>
+        <li><strong>Enable <code>stop_if_no_commit</code>.</strong> An iteration that doesn't produce a commit usually means the runner didn't really do anything.</li>
+        <li><strong>Enable <code>stop_if_dirty_before_run</code>.</strong> Refuse to start a new iteration on uncommitted changes.</li>
+        <li><strong>Confirm the runner CLI is authenticated.</strong> Run <code>claude --version</code> / <code>codex --version</code> / <code>aider --version</code> first; do one interactive run to set up auth.</li>
+        <li><strong>Watch the <a href="/ram">RAM page</a> during the first run.</strong> The event stream shows process output, exit codes, and blackboard updates in real time.</li>
+      </ul>
+      <p class="muted-meta safety-foot">This panel won't auto-run anything. It's just a checklist before you click <strong>Start loop</strong>.</p>
+    </div>
+  </section>
+
+  <!-- ── 2-row dashboard grid ────────────────────────────────────── -->
+  <section class="grid-12">
+
+    <!-- 2. Iteration Timeline -->
+    <article class="panel-card span-7">
+      <header class="pc-head">
+        <div class="pc-title"><span class="dot dot-pulse"></span>Iteration timeline</div>
+        <div class="pc-actions">
+          <span class="muted-meta" id="tlCount">0 iterations</span>
+          <button class="btn btn-xs btn-ghost" id="tlRefresh" title="Refresh">↻</button>
+        </div>
+      </header>
+      <div class="pc-body" id="timelineBody">
+        <div class="empty">
+          <strong>No iterations yet.</strong>
+          <p>Start the loop, or have your CLI <code>POST /api/iterations</code> when each pass begins and <code>PATCH</code> when it ends.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- 3. Plan Health -->
+    <article class="panel-card span-5">
+      <header class="pc-head">
+        <div class="pc-title"><span class="dot" style="background:var(--cyan)"></span>Plan health</div>
+        <div class="pc-actions">
+          <span class="muted-meta" id="planMeta">—</span>
+        </div>
+      </header>
+      <div class="pc-body" id="planBody">
+        <div class="empty"><strong>No IMPLEMENTATION_PLAN.md.</strong><p>Add one to the repo root — Ralph reads it as persistent state between iterations.</p></div>
+      </div>
+    </article>
+
+    <!-- 4. Backpressure -->
+    <article class="panel-card span-7">
+      <header class="pc-head">
+        <div class="pc-title"><span class="dot" style="background:var(--amber)"></span>Backpressure</div>
+        <div class="pc-actions">
+          <span class="muted-meta" id="bpMeta">—</span>
+          <button class="btn btn-xs btn-ghost" id="bpRunAll">Run all</button>
+        </div>
+      </header>
+      <div class="pc-body flush" id="bpBody">
+        <div class="empty"><strong>No validation detected.</strong><p>Add scripts to <code>package.json</code> (test, lint, typecheck, build) or pyproject — Studio auto-detects them.</p></div>
+      </div>
+    </article>
+
+    <!-- 5. Spec Coverage -->
+    <article class="panel-card span-5">
+      <header class="pc-head">
+        <div class="pc-title"><span class="dot" style="background:var(--purple)"></span>Spec coverage</div>
+        <div class="pc-actions"><span class="muted-meta" id="specsMeta">—</span></div>
+      </header>
+      <div class="pc-body flush" id="specsBody">
+        <div class="empty"><strong>No specs/ directory.</strong><p>Create <code>specs/*.md</code> as the source of truth for what Ralph should build.</p></div>
+      </div>
+    </article>
+
+    <!-- 6a. Runtime / RAM -->
+    <article class="panel-card span-12">
+      <header class="pc-head">
+        <div class="pc-title"><span class="dot dot-pulse" style="background:var(--cyan)"></span>Runtime — live RAM</div>
+        <div class="pc-actions">
+          <span class="muted-meta" id="ramMeta">—</span>
+          <button class="btn btn-xs btn-ghost" id="ramCheckpoint">Snapshot</button>
+        </div>
+      </header>
+      <div class="pc-body flush" id="ramBody">
+        <div class="ram-grid">
+
+          <div class="ram-col ram-col-1">
+            <h4 class="ram-col-h">Blackboard</h4>
+            <div class="ram-board" id="ramBoard">
+              <div class="empty"><strong>Volatile slots.</strong><p>Loop mode, current task, last error — populated when a runner is active.</p></div>
+            </div>
+            <h4 class="ram-col-h" style="margin-top:1rem">Memory pressure</h4>
+            <div class="ram-pressure" id="ramPressure">
+              <div class="ram-bar"><div class="ram-bar-row"><span class="ram-bar-k">prompt context</span><span class="ram-bar-v" id="ppPromptCtx">— B</span></div><div class="ram-bar-track"><div class="ram-bar-fill" id="ppPromptFill"></div></div></div>
+              <div class="ram-bar"><div class="ram-bar-row"><span class="ram-bar-k">repo scan</span><span class="ram-bar-v" id="ppRepo">— B</span></div></div>
+              <div class="ram-bar"><div class="ram-bar-row"><span class="ram-bar-k">events buffer</span><span class="ram-bar-v" id="ppEvents">— B</span></div></div>
+              <div class="ram-bar"><div class="ram-bar-row"><span class="ram-bar-k">runner RSS</span><span class="ram-bar-v" id="ppRss">—</span></div></div>
+            </div>
+          </div>
+
+          <div class="ram-col ram-col-2">
+            <h4 class="ram-col-h">Event stream <span class="muted-meta" id="ramStreamMeta">0 events</span></h4>
+            <div class="ram-events" id="ramEvents">
+              <div class="empty"><strong>No events yet.</strong><p>Loop start, iteration boundaries, scratchpad notes, and checkpoints stream here in real time.</p></div>
+            </div>
+          </div>
+
+          <div class="ram-col ram-col-3">
+            <h4 class="ram-col-h">Scratchpad</h4>
+            <form class="ram-scratch-form" id="ramScratchForm">
+              <textarea id="ramScratchInput" rows="2" placeholder="Quick note for this loop session…"></textarea>
+              <button class="btn btn-xs btn-primary" type="submit">Pin <span class="arrow">↵</span></button>
+            </form>
+            <ul class="ram-notes" id="ramNotes"><li class="muted-meta">No notes yet — pin a thought to remember it across the session.</li></ul>
+            <h4 class="ram-col-h" style="margin-top:1rem">Checkpoints</h4>
+            <ul class="ram-checkpoints" id="ramCheckpoints"><li class="muted-meta">Snapshot the repo + plan to compare later.</li></ul>
+          </div>
+
+        </div>
+      </div>
+    </article>
+
+    <!-- 6b. Prompt + Guardrails -->
+    <article class="panel-card span-12">
+      <header class="pc-head">
+        <div class="pc-title"><span class="dot" style="background:var(--acc)"></span>Prompt &amp; guardrails</div>
+        <div class="pc-actions"><span class="muted-meta" id="grMeta">—</span></div>
+      </header>
+      <div class="pc-body" id="grBody">
+        <div class="gr-grid">
+          <div class="gr-file" id="grPrompt"><div class="gr-file-head"><strong>PROMPT.md</strong><span class="status muted">missing</span></div><pre class="gr-preview">—</pre></div>
+          <div class="gr-file" id="grAgents"><div class="gr-file-head"><strong>AGENTS.md</strong><span class="status muted">missing</span></div><pre class="gr-preview">—</pre></div>
+          <div class="gr-suggestions" id="grSuggest">
+            <h4>Suggestions</h4>
+            <div class="empty"><strong>Looking good.</strong><p>No failure patterns yet. Suggestions appear after a few iterations.</p></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </section>
+</main>
+
+<!-- ── 7. Iteration replay drawer ────────────────────────────────── -->
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-veil" data-close></div>
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <header class="drawer-head">
+      <div class="drawer-head-l">
+        <span class="pill" id="drNumber">#—</span>
+        <strong id="drawerTitle">Iteration</strong>
+        <span class="status" id="drStatus">—</span>
+      </div>
+      <button class="btn btn-icon btn-ghost" data-close aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </header>
+
+    <div class="drawer-body">
+      <section class="dr-section">
+        <div class="dr-grid">
+          <div class="dr-kv"><span>Mode</span><strong id="drMode">—</strong></div>
+          <div class="dr-kv"><span>Runner</span><strong id="drRunner">—</strong></div>
+          <div class="dr-kv"><span>Started</span><strong id="drStarted">—</strong></div>
+          <div class="dr-kv"><span>Duration</span><strong id="drDuration">—</strong></div>
+          <div class="dr-kv"><span>Files</span><strong id="drFilesCount">0</strong></div>
+          <div class="dr-kv"><span>Commit</span><strong id="drCommit">—</strong></div>
+        </div>
+      </section>
+
+      <section class="dr-section">
+        <h4>Summary</h4>
+        <p id="drSummary" class="dr-text">No summary recorded.</p>
+      </section>
+
+      <section class="dr-section" id="drFailureWrap" hidden>
+        <h4>Failure</h4>
+        <p id="drFailure" class="dr-text dr-text-error">—</p>
+      </section>
+
+      <section class="dr-section">
+        <h4>Files changed <span class="muted-meta" id="drFilesMeta">0</span></h4>
+        <ul class="dr-files" id="drFiles"><li class="muted-meta">—</li></ul>
+      </section>
+
+      <section class="dr-section">
+        <h4>Validation</h4>
+        <ul class="dr-checks" id="drValidation"><li class="muted-meta">—</li></ul>
+      </section>
+
+      <section class="dr-section">
+        <h4>Command output <span class="muted-meta">tail · 4KB</span></h4>
+        <pre class="dr-pre" id="drOutput">—</pre>
+      </section>
+
+      <section class="dr-section" id="drPlanWrap" hidden>
+        <h4>Plan diff</h4>
+        <pre class="dr-pre" id="drPlanDiff">—</pre>
+      </section>
+    </div>
+  </div>
+</aside>
+
+<!-- ── Toasts ────────────────────────────────────────────────────── -->
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="demo-data.js?v=ralpharium-howto-1"></script>
+<script src="dashboard.js?v=ralpharium-howto-1"></script>
+</body>
+</html>

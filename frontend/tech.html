@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ralpharium</title>
+<meta name="description" content="How Ralpharium works: a local daemon that reads your repo, parses the plan, runs validation backpressure, tracks iteration history, and exposes a live RAM observability layer.">
+<link rel="stylesheet" href="style.css?v=ralpharium-nav-cream-1">
+<link rel="icon" type="image/png" href="https://static.wixstatic.com/media/e2da02_cdd3da8015f749ef94948fe714c530bb~mv2.png">
+<link rel="apple-touch-icon" href="https://static.wixstatic.com/media/e2da02_cdd3da8015f749ef94948fe714c530bb~mv2.png">
+</head>
+<body class="tech-page">
+
+<!-- Mini-sky: drifting cartoon clouds at the top -->
+<div class="mini-sky" aria-hidden="true">
+  <svg width="0" height="0" style="position:absolute"><defs>
+    <radialGradient id="tc-lobe" cx="38%" cy="30%" r="78%">
+      <stop offset="0%"   stop-color="#FFFFFF"/>
+      <stop offset="55%"  stop-color="#FAFDFF"/>
+      <stop offset="100%" stop-color="#A6CFE6"/>
+    </radialGradient>
+    <symbol id="tc-cloud" viewBox="0 0 340 170" overflow="visible">
+      <g fill="url(#tc-lobe)">
+        <circle cx="62"  cy="126" r="34"/>
+        <circle cx="128" cy="134" r="32"/>
+        <circle cx="194" cy="130" r="36"/>
+        <circle cx="258" cy="124" r="32"/>
+        <circle cx="42"  cy="96"  r="40"/>
+        <circle cx="98"  cy="84"  r="48"/>
+        <circle cx="170" cy="76"  r="54"/>
+        <circle cx="234" cy="86"  r="46"/>
+        <circle cx="294" cy="104" r="38"/>
+        <circle cx="80"  cy="48"  r="32"/>
+        <circle cx="150" cy="40"  r="38"/>
+        <circle cx="216" cy="48"  r="34"/>
+      </g>
+    </symbol>
+  </defs></svg>
+  <svg class="cloud m1"><use href="#tc-cloud"/></svg>
+  <svg class="cloud m2"><use href="#tc-cloud"/></svg>
+  <svg class="cloud m3"><use href="#tc-cloud"/></svg>
+  <svg class="cloud m4"><use href="#tc-cloud"/></svg>
+  <svg class="cloud m5"><use href="#tc-cloud"/></svg>
+  <svg class="cloud m6"><use href="#tc-cloud"/></svg>
+  <svg class="cloud m7"><use href="#tc-cloud"/></svg>
+  <svg class="cloud m8"><use href="#tc-cloud"/></svg>
+</div>
+
+<nav class="nav">
+  <a class="brand" href="/">
+    <span class="brand-mark"><img src="https://static.wixstatic.com/media/e2da02_253df55db309433a8658a03767c9da4c~mv2.png" alt="Ralpharium" width="36" height="36"></span>
+    <span class="brand-name">Ralpharium</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/dashboard">Dashboard</a></li>
+    <li><a href="/ram">RAM</a></li>
+    <li><a href="/tech" class="active">Architecture</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="https://flaunch.gg" target="_blank" rel="noreferrer" class="btn-pop btn-pop-icon btn-pop-flaunch" aria-label="Flaunch" title="Flaunch">
+      <img src="/img/flaunch-logo.svg" alt="Flaunch" width="22" height="22" class="btn-pop-img">
+    </a>
+    <a href="https://x.com/Ralphaxyz" target="_blank" rel="noreferrer" class="btn-pop btn-pop-icon btn-pop-x" aria-label="X / Twitter — @Ralphaxyz" title="X / Twitter — @Ralphaxyz">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2H21l-6.51 7.43L22 22h-6.828l-4.79-6.27L4.8 22H2.04l6.96-7.95L2 2h6.914l4.34 5.74L18.244 2zm-1.196 18h1.86L7.06 4H5.07l11.978 16z"/></svg>
+    </a>
+    <a href="https://github.com/ghuntley/how-to-ralph-wiggum" target="_blank" rel="noreferrer" class="btn-pop btn-pop-icon btn-pop-gh" aria-label="GitHub" title="GitHub">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55 0-.27-.01-.99-.02-1.94-3.2.7-3.87-1.54-3.87-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.25 3.34.95.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18.91-.25 1.89-.38 2.86-.38s1.95.13 2.86.38c2.18-1.49 3.14-1.18 3.14-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.7 5.41-5.27 5.69.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .31.21.66.79.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5Z"/></svg>
+    </a>
+  </div>
+</nav>
+
+<main class="wrap">
+  <!-- ── Hero ──────────────────────────────────────────────────── -->
+  <section class="tech-hero fade-up">
+    <span class="pill pill-yellow"><span class="dot"></span>Architecture</span>
+    <h1>How it's <span class="serif">built.</span></h1>
+    <p>Ralpharium is a small Python daemon that sits next to your repo. It reads the markdown files your AI runner cares about, spawns the runner as a subprocess, watches what comes out, and streams everything to a dashboard in your browser. Nothing leaves your machine. No accounts, no databases — just files, processes, and a WebSocket.</p>
+  </section>
+
+  <!-- ── Body ──────────────────────────────────────────────────── -->
+  <div class="tech-grid">
+
+    <!-- TOC -->
+    <aside class="tech-toc">
+      <h5>Contents</h5>
+      <a href="#home" class="active">Home</a>
+      <a href="#artifacts">Ralph artifacts</a>
+      <a href="#iterations">Iteration model</a>
+      <a href="#backpressure">Backpressure</a>
+      <a href="#ram">RAM observability</a>
+      <a href="#api">API surface</a>
+      <a href="#stack">Stack &amp; run</a>
+    </aside>
+
+    <!-- Sections -->
+    <div>
+      <section class="tech-section reveal" id="home">
+        <h2>Home</h2>
+        <p><strong>Local-first.</strong> The whole product runs on one Python process on your machine. There is no server you pay for, no SaaS to log into. The dashboard is just a static frontend served by the same daemon at <code>localhost:3000</code>.</p>
+        <p><strong>The runner is the AI.</strong> Ralpharium doesn't replace Claude Code, Codex, or Aider — it runs them. You pick which one in the dashboard. Each iteration spawns the runner as a subprocess, the daemon captures stdout, parses what came out, and records the result. Swap runners by changing one config field.</p>
+        <p>The four input files the runner reads each iteration: <code>PROMPT.md</code> (instructions), <code>AGENTS.md</code> (rules), <code>IMPLEMENTATION_PLAN.md</code> (task list), and <code>specs/*.md</code> (acceptance criteria). The daemon parses all four and surfaces them on the dashboard.</p>
+<pre>┌─────────────┐    reads     ┌─────────────────────────┐    streams    ┌──────────────┐
+│ your runner │ ──────────►  │   ralph studio daemon   │ ─────────────►│  dashboard   │
+│ (codex /    │   PROMPT.md  │  • repo inspector       │   websocket   │ (operator)   │
+│  claude /   │   PLAN.md    │  • plan parser          │               │              │
+│  aider)     │   AGENTS.md  │  • spec coverage        │               │              │
+│             │   specs/*    │  • backpressure runner  │               │              │
+│             │   git diff   │  • iteration store      │               │              │
+│             │              │  • RAM event stream     │               │              │
+└─────────────┘              └─────────────────────────┘               └──────────────┘
+                                       │
+                                  .ralph/iterations.jsonl  (append-only history)</pre>
+
+        <h3>Three execution surfaces</h3>
+        <div class="cards-grid three">
+          <div class="card p1"><div class="card-mark">1</div><h3>Disk</h3><p class="role">durable</p><p>The Ralph artifacts (<code>PROMPT.md</code>, <code>AGENTS.md</code>, <code>IMPLEMENTATION_PLAN.md</code>, <code>specs/*</code>) plus <code>.ralph/iterations.jsonl</code>. Survives restarts.</p><div class="card-foot"><span>files</span><span>JSONL</span></div></div>
+          <div class="card p2"><div class="card-mark">2</div><h3>RAM</h3><p class="role">volatile</p><p>Live event stream, blackboard slots, scratchpad, in-memory checkpoints. Wiped on daemon restart.</p><div class="card-foot"><span>ring buffer</span><span>WebSocket</span></div></div>
+          <div class="card p3"><div class="card-mark">3</div><h3>Process</h3><p class="role">runner</p><p>The configured runner (<code>codex</code>, <code>claude</code>, <code>aider</code>, custom shell) — spawned as a subprocess; stdout streamed live.</p><div class="card-foot"><span>asyncio</span><span>shell</span></div></div>
+        </div>
+      </section>
+
+      <section class="tech-section reveal" id="artifacts">
+        <h2>Ralph artifacts</h2>
+        <p>Every iteration starts by re-reading the same files. Studio parses each one and surfaces structure to the dashboard.</p>
+
+        <div class="memlay-wide">
+          <div class="h">file</div><div class="h">role</div><div class="h">what Studio extracts</div>
+          <div class="v-acc">PROMPT.md</div>           <div>per-iteration instruction</div>  <div>existence, modified time, preview, mode</div>
+          <div>AGENTS.md</div>                          <div>operational rules</div>           <div>existence, preview, suggested rules from history</div>
+          <div class="v-cyan">IMPLEMENTATION_PLAN.md</div><div>persistent state</div>          <div>tasks (done / next / blocked / stale), drift warnings</div>
+          <div>specs/*.md</div>                          <div>source of truth</div>            <div>per-spec coverage status from plan + commits</div>
+        </div>
+
+        <h3>Plan parser</h3>
+        <p>The parser reads checkbox tasks (<code>- [ ]</code>, <code>- [x]</code>, plus <code>[/]</code> in-progress, <code>[!]</code> blocked, <code>[~]</code> stale) and groups them by section. It picks "next" as the first pending task and raises warnings for repeated text, all-completed plans, and 24h+ staleness.</p>
+      </section>
+
+      <section class="tech-section reveal" id="iterations">
+        <h2>Iteration model</h2>
+        <p>Each loop pass is one Iteration. Studio creates one when you click Start (or when your runner POSTs to <code>/api/iterations</code>) and finalizes it on success / failure / stop. The full record is appended to <code>.ralph/iterations.jsonl</code> — a flat file you can <code>tail -f</code>, grep, or ship anywhere.</p>
+<pre>{
+  "id": "it_1736172000_a3f9c1d8",
+  "number": 42,
+  "mode": "build",
+  "status": "passed",
+  "started_at": 1736172000.12,
+  "ended_at": 1736172094.55,
+  "summary": "Add /api/specs endpoint",
+  "files_changed": ["backend/main.py", "backend/specs.py"],
+  "commit_sha": "9af2b7c",
+  "test_status": "passed",
+  "validation": [{"name": "Tests", "status": "passed"}],
+  "command_output": "...",
+  "failure_reason": null
+}</pre>
+        <p>The dashboard timeline lists the latest 30; click any row and the replay drawer fills with the prompt mode used, the validation results, the files changed, the tail of stdout, and the commit it produced.</p>
+      </section>
+
+      <section class="tech-section reveal" id="backpressure">
+        <h2>Backpressure (validation)</h2>
+        <p><strong>Backpressure</strong> is just a name for "the loop stops when tests fail." Ralpharium looks for <code>npm test</code> / <code>npm run lint</code> / <code>npm run build</code> in your <code>package.json</code> and offers them as one-click checks. If you turn on <code>stop_on_failure</code>, a red check halts the loop before bad code lands. Same idea for git: turn on <code>stop_if_dirty_before_run</code> and Ralph won't start a new iteration on uncommitted changes.</p>
+        <div class="cards-grid three">
+          <div class="card"><div class="card-mark acc">⚡</div><h3>Auto-detect</h3><p>Reads <code>package.json</code> scripts (test, lint, typecheck, build). Falls back to <code>pytest -q</code> for Python projects.</p></div>
+          <div class="card"><div class="card-mark cyan">▦</div><h3>Status &amp; output</h3><p>Each check tracks status, last-run timestamp, duration, and the tail of stdout — exposed at <code>/api/backpressure</code> and live over WS.</p></div>
+          <div class="card"><div class="card-mark purple">⚐</div><h3>Guardrail learning</h3><p>Repeated failures turn into AGENTS.md suggestions: "Tests failed 3× — require <code>npm test</code> before commit."</p></div>
+        </div>
+      </section>
+
+      <section class="tech-section reveal" id="ram">
+        <h2>RAM observability</h2>
+        <p>Beyond the durable iteration log, Studio keeps a <span class="serif">volatile</span> RAM layer that the dashboard can stream live. Nothing here is written to disk — it's the live nervous system of the running daemon.</p>
+
+        <div class="cards-grid three">
+          <div class="card"><div class="card-mark acc">⌬</div><h3>Event stream</h3><p>Ring buffer of typed events: boot, iteration start/end, validation, scratchpad notes, checkpoints. Capped at 600 entries.</p><div class="card-foot"><span>deque</span><span>600 entries</span></div></div>
+          <div class="card"><div class="card-mark cyan">▦</div><h3>Blackboard</h3><p>Named volatile slots: <code>loop_mode</code>, <code>runner</code>, <code>current_task</code>, <code>last_error</code>, <code>last_commit</code>, <code>files_changed</code>.</p><div class="card-foot"><span>kv slots</span><span>volatile</span></div></div>
+          <div class="card"><div class="card-mark purple">✎</div><h3>Scratchpad</h3><p>Pin a thought during the session. Survives across iterations, dies on restart. Useful for "the spec was wrong" notes you'll lose otherwise.</p><div class="card-foot"><span>notes</span><span>session-only</span></div></div>
+          <div class="card"><div class="card-mark acc">⌚</div><h3>Checkpoints</h3><p>Snapshot the repo + plan + prompt at any moment. Compare two checkpoints to see what changed during the session.</p><div class="card-foot"><span>repo+plan</span><span>in-memory</span></div></div>
+          <div class="card"><div class="card-mark cyan">⚖</div><h3>Memory pressure</h3><p>Real numbers: prompt context bytes, repo scan size, event buffer size, runner RSS — surfaced as bars in the dashboard.</p><div class="card-foot"><span>fs + ps</span><span>real</span></div></div>
+          <div class="card"><div class="card-mark purple">⤳</div><h3>Process</h3><p>The runner subprocess: PID, RSS via <code>ps</code>/<code>tasklist</code>, command, runtime. Live stdout streams over WebSocket.</p><div class="card-foot"><span>asyncio</span><span>stdout</span></div></div>
+        </div>
+      </section>
+
+      <section class="tech-section reveal" id="api">
+        <h2>API surface</h2>
+        <p>Everything is REST + a single WebSocket. The dashboard only uses these — your CLI can use them too.</p>
+<pre>GET   /api/state                 # aggregate first-paint snapshot
+GET   /api/status                # mode, iter count, runner, branch, dirty
+GET   /api/repo-state            # git + Ralph file detection
+GET   /api/plan-health           # IMPLEMENTATION_PLAN.md parsed
+GET   /api/spec-coverage         # specs/* mapped to plan + commits
+GET   /api/backpressure          # auto-detected validation checks
+GET   /api/guardrails            # PROMPT/AGENTS + suggestions
+GET   /api/iterations?limit=N    # iteration history
+GET   /api/iterations/{id}       # single iteration detail
+POST  /api/iterations            # CLI hook: begin iteration
+PATCH /api/iterations/{id}       # CLI hook: finish/update iteration
+
+POST  /api/loop/{start|pause|resume|stop|panic}   # control
+POST  /api/check/{id}            # run a backpressure check
+POST  /api/runner                # set runner + command
+
+GET   /api/ram                   # full volatile snapshot
+GET   /api/ram/events            # ring buffer
+GET   /api/ram/blackboard        # kv slots
+GET   /api/ram/pressure          # memory pressure
+POST  /api/ram/scratchpad        # pin a note
+POST  /api/ram/checkpoints       # snapshot repo+plan
+
+WS    /ws                        # live updates: status, iteration_*, ram_*, log</pre>
+      </section>
+
+      <section class="tech-section reveal" id="stack">
+        <h2>Stack &amp; run</h2>
+        <div class="cards-grid three">
+          <div class="card"><div class="card-mark acc">PY</div><h3>Backend</h3><ul style="margin-top:.6rem"><li>Python 3.11+</li><li>FastAPI · Uvicorn</li><li><code>asyncio.subprocess</code></li><li>stdlib only — no NumPy, no DB</li><li>JSONL persistence</li></ul></div>
+          <div class="card"><div class="card-mark cyan">JS</div><h3>Frontend</h3><ul style="margin-top:.6rem"><li>Vanilla HTML · CSS · JS</li><li>WebSocket client</li><li>Inline SVG, no canvas</li><li>Responsive 12-col grid</li><li>Zero build step</li></ul></div>
+          <div class="card"><div class="card-mark purple">SH</div><h3>Run locally</h3><pre style="margin-top:.6rem; font-size:.78rem; padding:.85rem 1rem;">pip install -r backend/requirements.txt
+python backend/main.py
+# http://localhost:3000
+
+# optional config
+RALPH_REPO_PATH=/path/to/repo \
+RALPH_RUNNER=claude \
+RALPH_RUNNER_CMD="claude -p PROMPT.md" \
+python backend/main.py</pre></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ── CTA ──────────────────────────────────────────────────── -->
+  <section class="cta reveal" style="margin-bottom:4rem">
+    <span class="pill pill-acc"><span class="dot dot-pulse"></span>Console</span>
+    <h2 style="margin-top:1rem">See it run.</h2>
+    <p>Open the live console and watch every Ralph iteration — plan, validation, commit — through one observable surface.</p>
+    <div class="hero-actions">
+      <a href="/dashboard" class="btn btn-primary">Open dashboard <span class="arrow">→</span></a>
+      <a href="/" class="btn btn-ghost">Back to home</a>
+    </div>
+  </section>
+</main>
+
+<footer class="footer wrap">
+  <div class="footer-grid">
+    <div>
+      <div class="brand" style="margin-bottom:.85rem">
+        <span class="brand-mark"><img src="https://static.wixstatic.com/media/e2da02_253df55db309433a8658a03767c9da4c~mv2.png" alt="Ralpharium" width="36" height="36"></span>
+        <span class="brand-name">Ralpharium</span>
+      </div>
+      <p style="max-width:34ch; font-size:.92rem">A local control plane for the Ralph Loop. Inspect the plan, run validation, replay any iteration — without leaving the terminal.</p>
+    </div>
+    <div>
+      <h5>Studio</h5>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/tech">Architecture</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Source</h5>
+      <ul>
+        <li><a href="https://ghuntley.com/ralph/" target="_blank" rel="noreferrer">Ralph Loop essay</a></li>
+        <li><a href="https://github.com/ghuntley/how-to-ralph-wiggum" target="_blank" rel="noreferrer">Ralph Playbook</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Stack</h5>
+      <ul>
+        <li>FastAPI · Uvicorn</li>
+        <li>WebSocket telemetry</li>
+        <li>Vanilla HTML · CSS · JS</li>
+        <li>Local JSONL history</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <span>© Ralpharium · runs entirely on localhost</span>
+    <span>architecture.md</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("in"); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+  const links = Array.from(document.querySelectorAll(".tech-toc a"));
+  const sections = links.map((a) => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+  const setActive = () => {
+    const y = window.scrollY + 140;
+    let active = sections[0];
+    sections.forEach((s) => { if (s.offsetTop <= y) active = s; });
+    if (active) links.forEach((a) => a.classList.toggle("active", a.getAttribute("href") === `#${active.id}`));
+  };
+  document.addEventListener("scroll", setActive, { passive: true });
+  setActive();
+})();
+</script>
+</body>
+</html>

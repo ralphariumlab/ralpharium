@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ralpharium</title>
+<meta name="description" content="Live inspector for Ralpharium's volatile memory: shared segment, blackboard slots, event ring buffer, scratchpad, and checkpoints.">
+<link rel="stylesheet" href="style.css?v=ralpharium-nav-cream-1">
+<link rel="icon" type="image/png" href="https://static.wixstatic.com/media/e2da02_cdd3da8015f749ef94948fe714c530bb~mv2.png">
+<link rel="apple-touch-icon" href="https://static.wixstatic.com/media/e2da02_cdd3da8015f749ef94948fe714c530bb~mv2.png">
+</head>
+<body class="ram-page">
+
+<!-- Mini-sky: drifting cartoon clouds at the top -->
+<div class="mini-sky" aria-hidden="true">
+  <svg width="0" height="0" style="position:absolute"><defs>
+    <radialGradient id="rm-lobe" cx="38%" cy="30%" r="78%">
+      <stop offset="0%"   stop-color="#FFFFFF"/>
+      <stop offset="55%"  stop-color="#FAFDFF"/>
+      <stop offset="100%" stop-color="#A6CFE6"/>
+    </radialGradient>
+    <symbol id="rm-cloud" viewBox="0 0 340 170" overflow="visible">
+      <g fill="url(#rm-lobe)">
+        <circle cx="62"  cy="126" r="34"/>
+        <circle cx="128" cy="134" r="32"/>
+        <circle cx="194" cy="130" r="36"/>
+        <circle cx="258" cy="124" r="32"/>
+        <circle cx="42"  cy="96"  r="40"/>
+        <circle cx="98"  cy="84"  r="48"/>
+        <circle cx="170" cy="76"  r="54"/>
+        <circle cx="234" cy="86"  r="46"/>
+        <circle cx="294" cy="104" r="38"/>
+        <circle cx="80"  cy="48"  r="32"/>
+        <circle cx="150" cy="40"  r="38"/>
+        <circle cx="216" cy="48"  r="34"/>
+      </g>
+    </symbol>
+  </defs></svg>
+  <svg class="cloud m1"><use href="#rm-cloud"/></svg>
+  <svg class="cloud m2"><use href="#rm-cloud"/></svg>
+  <svg class="cloud m3"><use href="#rm-cloud"/></svg>
+  <svg class="cloud m4"><use href="#rm-cloud"/></svg>
+  <svg class="cloud m5"><use href="#rm-cloud"/></svg>
+  <svg class="cloud m6"><use href="#rm-cloud"/></svg>
+  <svg class="cloud m7"><use href="#rm-cloud"/></svg>
+  <svg class="cloud m8"><use href="#rm-cloud"/></svg>
+</div>
+
+<nav class="nav">
+  <a class="brand" href="/">
+    <span class="brand-mark"><img src="https://static.wixstatic.com/media/e2da02_253df55db309433a8658a03767c9da4c~mv2.png" alt="Ralpharium" width="36" height="36"></span>
+    <span class="brand-name">Ralpharium</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/dashboard">Dashboard</a></li>
+    <li><a href="/ram" class="active">RAM</a></li>
+    <li><a href="/tech">Architecture</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="https://flaunch.gg" target="_blank" rel="noreferrer" class="btn-pop btn-pop-icon btn-pop-flaunch" aria-label="Flaunch" title="Flaunch">
+      <img src="/img/flaunch-logo.svg" alt="Flaunch" width="22" height="22" class="btn-pop-img">
+    </a>
+    <a href="https://x.com/Ralphaxyz" target="_blank" rel="noreferrer" class="btn-pop btn-pop-icon btn-pop-x" aria-label="X / Twitter — @Ralphaxyz" title="X / Twitter — @Ralphaxyz">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2H21l-6.51 7.43L22 22h-6.828l-4.79-6.27L4.8 22H2.04l6.96-7.95L2 2h6.914l4.34 5.74L18.244 2zm-1.196 18h1.86L7.06 4H5.07l11.978 16z"/></svg>
+    </a>
+    <a href="https://github.com/ghuntley/how-to-ralph-wiggum" target="_blank" rel="noreferrer" class="btn-pop btn-pop-icon btn-pop-gh" aria-label="GitHub" title="GitHub">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55 0-.27-.01-.99-.02-1.94-3.2.7-3.87-1.54-3.87-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.25 3.34.95.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18.91-.25 1.89-.38 2.86-.38s1.95.13 2.86.38c2.18-1.49 3.14-1.18 3.14-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.7 5.41-5.27 5.69.41.36.78 1.06.78 2.14 0 1.55-.01 2.8-.01 3.18 0 .31.21.66.79.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5Z"/></svg>
+    </a>
+  </div>
+</nav>
+
+<main class="ram-main">
+  <!-- Preview banner — shown to public visitors with no local daemon data -->
+  <div class="preview-banner" id="previewBanner" hidden>
+    <div class="preview-banner-mark" aria-hidden="true">👋</div>
+    <div class="preview-banner-copy">
+      <strong>You're previewing Ralpharium.</strong>
+      <p>This is the live debug view of a daemon running on <em>your</em> machine. Install Ralpharium locally to see real agent activity, blackboard slots, and event streams.</p>
+      <code class="preview-banner-cmd">npx ralpharium init &amp;&amp; npx ralpharium start</code>
+    </div>
+    <button class="btn btn-xs btn-ghost preview-banner-x" id="previewBannerClose" aria-label="Dismiss">✕</button>
+  </div>
+
+
+  <!-- ── 1. Status strip / hero ────────────────────────────────── -->
+  <header class="ram-hero">
+    <div class="ram-hero-l">
+      <span class="ram-eyebrow">
+        <span class="dot dot-pulse" id="ramLiveDot"></span>
+        <span id="ramLiveText">connecting</span>
+      </span>
+      <h1 class="ram-title">
+        <span class="ram-title-mark" aria-hidden="true">▤</span>
+        <span>RAM</span>
+        <span class="ram-title-cursor" aria-hidden="true">▍</span>
+      </h1>
+      <p class="ram-sub">Live look at what the daemon has in memory <em>right now</em>. Volatile — wiped on restart. <strong>Start a run</strong> from the <a href="/dashboard" class="ram-sub-link">dashboard</a>; results, commit SHAs, and replayable history live there too (and on disk at <code>.ralph/iterations.jsonl</code>).</p>
+      <div class="ram-hero-segline">
+        <span class="pill pill-cyan" id="ramSegPill"><span class="dot"></span><span id="ramSegPillText">segment</span></span>
+        <code class="ram-segname" id="ramHeroSegName">—</code>
+        <span class="ram-hero-sep">·</span>
+        <span class="ram-hero-num" id="ramHeroSegBytes">— / —</span>
+      </div>
+    </div>
+
+    <div class="ram-hero-r">
+      <div class="ram-stat"><span class="k">loop mode</span><span class="v" id="hMode">idle</span></div>
+      <div class="ram-stat"><span class="k">runner</span><span class="v" id="hRunner">—</span></div>
+      <div class="ram-stat"><span class="k">runner pid</span><span class="v mono" id="hPid">—</span></div>
+      <div class="ram-stat"><span class="k">runner rss</span><span class="v mono" id="hRss">—</span></div>
+      <div class="ram-stat"><span class="k">events</span><span class="v" id="hEvents">0 / 0</span></div>
+      <div class="ram-stat"><span class="k">updated</span><span class="v" id="hUpdated">—</span></div>
+    </div>
+  </header>
+
+  <!-- ── How to use ────────────────────────────────────────────── -->
+  <section class="grid-12">
+    <article class="panel-card span-12 ram-howto">
+      <header class="pc-head">
+        <div class="pc-title"><span class="dot" style="background:var(--yellow,#FFD90F)"></span>How to use</div>
+        <div class="pc-actions"><span class="muted-meta">live · volatile · wiped on restart</span></div>
+      </header>
+      <div class="pc-body">
+        <ol class="ram-howto-steps">
+          <li>
+            <span class="ram-howto-num">1</span>
+            <div>
+              <h4>Start a run</h4>
+              <p>Open <a href="/dashboard">the dashboard</a>, pick a runner (Claude / Codex / Aider / custom), click <strong>Start</strong>.</p>
+            </div>
+          </li>
+          <li>
+            <span class="ram-howto-num">2</span>
+            <div>
+              <h4>Watch it stream</h4>
+              <p>Panels below fill in over WebSocket as iterations run. No refresh needed. "No data" = loop hasn't started.</p>
+            </div>
+          </li>
+          <li>
+            <span class="ram-howto-num">3</span>
+            <div>
+              <h4>Find results</h4>
+              <p>This view is RAM-only. Past iterations, commit SHAs, validation outputs, and replayable history live on the <a href="/dashboard">dashboard timeline</a> and on disk at <code>.ralph/iterations.jsonl</code>.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── Thrash alert (only shown when detected) ──────────────── -->
+  <section class="grid-12" id="thrashSection" hidden>
+    <article class="panel-card span-12 thrash-card">
+      <header class="pc-head">
+        <div>
+          <div class="pc-title"><span class="dot dot-pulse" style="background:var(--pink,#E84A5F)"></span>Thrash detected</div>
+          <div class="pc-sub" id="thrashSub">Ralph keeps Ralphing the wrong thing — same files, same failure repeating.</div>
+        </div>
+        <div class="pc-actions"><span class="muted-meta" id="thrashMeta">—</span></div>
+      </header>
+      <div class="pc-body" id="thrashBody"></div>
+    </article>
+  </section>
+
+  <!-- ── Agent roster (the 8 specialized agents) ─────────────── -->
+  <section class="grid-12">
+    <article class="panel-card span-12">
+      <header class="pc-head">
+        <div>
+          <div class="pc-title"><span class="dot" style="background:var(--acc)"></span>Agents</div>
+          <div class="pc-sub">8 specialized agents. Click any card to drill into its prompt + decision history.</div>
+        </div>
+        <div class="pc-actions"><span class="muted-meta" id="agentsMeta">8 agents · idle</span></div>
+      </header>
+      <div class="pc-body">
+        <div class="agent-grid" id="agentGrid"></div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── 2. Memory pressure tiles ───────────────────────────────── -->
+  <section class="grid-12">
+    <article class="panel-card span-12">
+      <header class="pc-head">
+        <div>
+          <div class="pc-title"><span class="dot" style="background:var(--cyan)"></span>Memory pressure</div>
+          <div class="pc-sub">% of the shared segment and event ring buffer in use right now.</div>
+        </div>
+        <div class="pc-actions"><span class="muted-meta" id="mpMeta">—</span></div>
+      </header>
+      <div class="pc-body">
+        <div class="metric-tiles" id="metricTiles"></div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── 3. Shared segment + Process monitor ──────────────────── -->
+  <section class="grid-12">
+    <article class="panel-card span-8">
+      <header class="pc-head">
+        <div>
+          <div class="pc-title"><span class="dot dot-pulse"></span>Shared memory segment</div>
+          <div class="pc-sub">Raw hex + decoded JSON of the live blackboard the 8 agents read &amp; write.</div>
+        </div>
+        <div class="pc-actions">
+          <span class="status status-muted" id="segStatus"><span class="dot"></span>unknown</span>
+          <span class="muted-meta" id="segMeta">—</span>
+        </div>
+      </header>
+      <div class="pc-body">
+        <div class="seg-meta">
+          <div class="seg-row"><span class="k">name</span><code class="v" id="segName">—</code></div>
+          <div class="seg-row"><span class="k">size</span><span class="v mono" id="segSize">—</span></div>
+          <div class="seg-row"><span class="k">used</span><span class="v mono" id="segUsed">—</span></div>
+          <div class="seg-row"><span class="k">updated</span><span class="v mono" id="segUpdated">—</span></div>
+        </div>
+        <div class="seg-bar"><div class="seg-bar-fill" id="segFill"></div></div>
+
+        <div class="seg-split">
+          <div class="seg-split-l">
+            <div class="seg-split-h">
+              <span>hex preview</span>
+              <span class="muted-meta" id="segHexMeta">—</span>
+            </div>
+            <div class="seg-hex" id="segHex">
+              <div class="empty">
+                <strong>No segment data.</strong>
+                <p>Start the loop to populate the shared segment with live blackboard JSON.</p>
+              </div>
+            </div>
+          </div>
+          <div class="seg-split-r">
+            <div class="seg-split-h">
+              <span>decoded payload</span>
+              <span class="muted-meta">JSON</span>
+            </div>
+            <pre class="seg-decoded" id="segDecoded">—</pre>
+          </div>
+        </div>
+
+        <div class="seg-error" id="segError" hidden></div>
+      </div>
+    </article>
+
+    <article class="panel-card span-4">
+      <header class="pc-head">
+        <div>
+          <div class="pc-title"><span class="dot" style="background:var(--amber)"></span>Process monitor</div>
+          <div class="pc-sub">Live runner PID, RSS, runtime, last exit code.</div>
+        </div>
+        <div class="pc-actions">
+          <span class="status status-muted" id="procStatus"><span class="dot"></span>stopped</span>
+        </div>
+      </header>
+      <div class="pc-body" id="procBody">
+        <div class="empty">
+          <strong>No active runner process.</strong>
+          <p>Configure <code>RALPH_RUNNER_CMD</code> and start the loop to see live PID, RSS, and runtime stats.</p>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── 4. Live blackboard ─────────────────────────────────────── -->
+  <section class="grid-12">
+    <article class="panel-card span-12">
+      <header class="pc-head">
+        <div class="pc-title"><span class="dot" style="background:var(--acc)"></span>Live blackboard</div>
+        <div class="pc-actions"><span class="muted-meta" id="bbMeta">—</span></div>
+      </header>
+      <div class="pc-body">
+        <div class="bb-grid" id="bbGrid"></div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── 5. Event stream + Scratchpad ───────────────────────────── -->
+  <section class="grid-12">
+    <article class="panel-card span-7">
+      <header class="pc-head">
+        <div class="pc-title"><span class="dot dot-pulse" style="background:var(--cyan)"></span>Event stream</div>
+        <div class="pc-actions">
+          <span class="muted-meta" id="evMeta">0 events</span>
+          <button class="btn btn-xs btn-ghost" id="evPause" data-paused="false">Pause</button>
+        </div>
+      </header>
+      <div class="pc-body flush">
+        <ul class="ev-list" id="evList">
+          <li class="empty-row">
+            <strong>No events yet.</strong>
+            <p>Events appear when the loop boots, iterations begin and end, validation runs, scratchpad notes are pinned, or checkpoints are taken.</p>
+          </li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="panel-card span-5">
+      <header class="pc-head">
+        <div class="pc-title"><span class="dot" style="background:var(--purple)"></span>Scratchpad</div>
+        <div class="pc-actions">
+          <span class="status status-muted">volatile</span>
+          <button class="btn btn-xs btn-ghost" id="scClear">Clear all</button>
+        </div>
+      </header>
+      <div class="pc-body">
+        <form class="sc-form" id="scForm">
+          <textarea id="scInput" rows="2" placeholder="Pin a thought — wiped when the daemon restarts." maxlength="2000"></textarea>
+          <div class="sc-form-r">
+            <span class="muted-meta" id="scCount">0 / 2000</span>
+            <button class="btn btn-xs btn-primary" type="submit">Pin <span class="arrow">↵</span></button>
+          </div>
+        </form>
+        <ul class="sc-list" id="scList">
+          <li class="empty-row">
+            <strong>Nothing pinned.</strong>
+            <p>Scratchpad notes are RAM-only — useful for "the spec is wrong" reminders during a session.</p>
+          </li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── 6. Checkpoints ─────────────────────────────────────────── -->
+  <section class="grid-12">
+    <article class="panel-card span-12">
+      <header class="pc-head">
+        <div class="pc-title"><span class="dot" style="background:var(--amber)"></span>Checkpoints</div>
+        <div class="pc-actions">
+          <span class="muted-meta" id="cpMeta">0 checkpoints</span>
+          <button class="btn btn-xs btn-primary" id="cpCreate">Create RAM checkpoint <span class="arrow">→</span></button>
+        </div>
+      </header>
+      <div class="pc-body flush">
+        <ul class="cp-list" id="cpList">
+          <li class="empty-row">
+            <strong>No checkpoints yet.</strong>
+            <p>Snapshot the repo + plan + prompt to compare later. Checkpoints live in memory only and disappear on daemon restart.</p>
+          </li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+</main>
+
+<!-- Agent drill-down drawer -->
+<aside class="agent-drawer" id="agentDrawer" aria-hidden="true">
+  <div class="agent-drawer-bg" data-close></div>
+  <div class="agent-drawer-panel">
+    <header class="agent-drawer-head">
+      <div>
+        <div class="agent-drawer-name" id="adName">—</div>
+        <div class="agent-drawer-role" id="adRole">—</div>
+      </div>
+      <button class="btn btn-xs btn-ghost" data-close aria-label="Close">✕</button>
+    </header>
+    <div class="agent-drawer-body" id="adBody"></div>
+  </div>
+</aside>
+
+<!-- Toast container -->
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="demo-data.js?v=ralpharium-banner-2"></script>
+<script src="ram.js?v=ralpharium-banner-2"></script>
+</body>
+</html>
