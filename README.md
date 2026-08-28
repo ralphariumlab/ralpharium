@@ -33,7 +33,7 @@ A local-first control plane for autonomous AI coding loops — **Claude · Codex
 
 </div>
 
-CA: soon
+CA: 0xfaf26f5359bd021193b0296a04adc5549ede8fd3
 
 ---
 
